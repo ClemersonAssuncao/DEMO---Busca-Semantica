@@ -1,0 +1,31 @@
+{% extends "BuscaSemantica/base.html" %}
+{% block content %}
+    <div class='h-100 overflow-hidden'>
+        <div class="p-5"  style="height: 130px">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Pesquisar sobre..." aria-label="Pesquisar sobre..." aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <span class="material-icons">
+                            search
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class='border overflow-auto' style="height: calc( 100% - 130px) ">
+            <div class="container h-100 pt-2">
+                {% for item in list %}
+                <div class="card border p-2 d-flex flex-column mb-2">
+                    <div class="card-title fs-6 border-bottom">
+                        {{item.title}}
+                    </div>
+                    <div class="card-content">
+                        {{item.content}}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

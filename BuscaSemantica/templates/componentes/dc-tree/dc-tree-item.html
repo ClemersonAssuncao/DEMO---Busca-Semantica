@@ -1,0 +1,9 @@
+
+    {% for child in item %}
+        <ul>
+            <li><a item-code="{{child.id}}" href="{{child.link}}">{{child.name}}</a></li>  
+        {% if child.children is not None %}   
+            {%include "componentes/dc-tree/dc-tree-item.html" with item=child.children %}
+        {% endif %}
+        </ul>
+    {% endfor %}
