@@ -54,3 +54,11 @@
 .no-text-decor{
     text-decoration: none;
 }
+
+ul {
+    list-style-type: none;
+}
+ul .material-icons {
+    color: #CCC;
+    margin-right: 10px;
+}
