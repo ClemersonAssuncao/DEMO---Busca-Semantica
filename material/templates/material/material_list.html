@@ -23,7 +23,7 @@
                 
             </div>
             <div class='flex-row-reverse d-flex border-bottom p-1' style="margin-right: 20px; height: 50px;">
-                <a role="button" class="btn btn-secondary mx-1" href="{% url 'material_add' %}" >Adicionar</a>
+                <a role="button" class="btn btn-secondary mx-1" href="{% url 'material:material_add' %}" >Adicionar</a>
                 <a role="button" class="btn btn-secondary mx-1">Editar</a>
                 <a role="button" class="btn btn-secondary mx-1">Excluir</a>
             </div>
@@ -40,7 +40,7 @@
                         {% for row in metadata.content %}
                             <tr>
                                 {% for column in metadata.columns %}
-                                    <td><a href="{% url 'material_edit' row.id %}">{{row|get_obj_attr:column.attname}} </a></td>
+                                    <td><a href="{% url 'material:material_edit' row.id %}">{{row|get_obj_attr:column.attname}} </a></td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
