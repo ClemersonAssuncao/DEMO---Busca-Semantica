@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'search',
     'BuscaSemantica',
-    'material'
+    'documents',
+    'users'
 ]
 
 MIDDLEWARE = [

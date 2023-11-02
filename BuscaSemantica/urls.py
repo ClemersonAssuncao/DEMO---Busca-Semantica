@@ -18,13 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-#from Busca search import views
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-   # path('', views.search_index),
+    path('about/', views.about, name='index'),
+    path('documents/', include('documents.urls'), name='documents'),
     path('', include('search.urls'), name='search'),
-    path('material/', include('material.urls'), name='material'),
+    path('user/', include('users.urls'), name='users'),
+    # path('users/', include('material.urls'), name='material'),
 ]
 
 

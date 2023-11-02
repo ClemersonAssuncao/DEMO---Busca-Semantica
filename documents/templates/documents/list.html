@@ -1,0 +1,54 @@
+{% extends "BuscaSemantica/base.html" %}
+{% block content %}
+{% load controllForms %}
+
+<div class="p-3 bg-light h-100">
+    <div class="d-flex flex-row h-100">
+        <div class="card d-flex flex-column flex-shrink-0 h-100" style="margin-right: 10px; width: 280px;">
+            <div class='border-bottom p-3'>
+                <div class="inner-addon right-addon">
+                    <i class="bi bi-search"></i>
+                    <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+                </div>
+                <div class='d-flex justify-content-center pt-3'>
+                    <button type="button" class="btn btn-light">
+                        <i class="bi bi-folder-plus" style="margin-right:5px"></i>
+                        Incluir pasta
+                    </button>
+                </div>
+            </div>
+            <div class='overflow-auto'>
+                {% include "componentes/dc-tree/dc-tree.html" with dc_tree=folders %}
+            </div>
+        </div>
+        <div class="card d-flex flex-column flex-shrink-0 p-3 h-100" style="width: calc(100% - 290px);">
+            <div class="inner-addon right-addon">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+            </div>
+            <div class='py-2'>
+                <span class="badge rounded-pill text-bg-secondary text-white">Secondary <i class="bi bi-x"></i> </span>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    {% for column in metadata.columns %}
+                        <th scope="col">{{column.verbose_name}}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                    {% for row in metadata.content %}
+                        <tr>
+                            {% for column in metadata.columns %}
+                                <td><a href="{% url 'material:material_edit' row.id %}">{{row|get_obj_attr:column.attname}} </a></td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>           
+        </div>
+    </div>
+</div>
+
+{% endblock %}

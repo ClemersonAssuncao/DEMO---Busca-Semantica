@@ -1,12 +1,19 @@
 
     {% for child in item %}
-        <ul>
-            <li>
-                <span class="material-icons">folder </span>
-                <a item-code="{{child.id}}" {% if child.link %}href="{{child.link}}" {% endif %}>{{child.name}}</a>
-            </li>  
-        {% if child.children is not None %}   
-            {%include "componentes/dc-tree/dc-tree-item.html" with item=child.children %}
-        {% endif %}
-        </ul>
+    
+        <li class="mb-1" style='margin-left:10px'>
+            <div class="dropdown-context-menu" data-option='#context-menu-folder'>
+                <button class="btn btn-toggle align-items-center rounded " data-bs-toggle="collapse" data-bs-target="#folder-{{child.id}}" aria-expanded="false">
+                    <i class="bi bi-caret-right"></i> 
+                </button>
+                <span role="button" class='selection-element folder' data-selection=".folder" data-id="{{child.id}}" >{{child.name}}</span>
+            </div>
+            <div class="collapse show" id="folder-{{child.id}}">
+                <ul class="list-unstyled btn-toggle-nav fw-normal pb-1">
+                {% if child.children is not None %}   
+                    {%include "componentes/dc-tree/dc-tree-item.html" with item=child.children %}
+                {% endif %}
+                </ul>
+            </div>
+        </li>
     {% endfor %}
