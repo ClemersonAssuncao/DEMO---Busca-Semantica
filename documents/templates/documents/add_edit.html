@@ -1,0 +1,83 @@
+{% extends "BuscaSemantica/base.html" %}
+{% block content %}
+{% load controllForms %}
+    <div class="p-3 bg-light h-100">
+        <div class="d-flex flex-row h-100">
+            <div class="card d-flex flex-column flex-shrink-0 h-100" style="margin-right: 10px; width: 280px;">
+                <div class='border-bottom p-3'>
+                    <div class="inner-addon right-addon">
+                        <i class="bi bi-search"></i>
+                        <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+                    </div>
+                    <div class='d-flex justify-content-center pt-3'>
+                        <button type="button" class="btn btn-light">
+                            <i class="bi bi-folder-plus" style="margin-right:5px"></i>
+                            Incluir pasta
+                        </button>
+                    </div>
+                </div>
+                <div class='overflow-auto'>
+                    {% include "componentes/dc-tree/dc-tree.html" with dc_tree=folders %}
+                </div>
+            </div>
+            <div class="card d-flex flex-column flex-shrink-0 p-3 h-100" style="width: calc(100% - 290px);">
+                <div class='d-flex flex-row'>
+                    <a class="nav-link" href="{% url 'documents:list' %}"><i class="bi bi-chevron-left" style="font-size: 1.25rem;margin-right:5px"></i></a>
+                    <h3>{{form.form_title}}</h3>
+                </div>
+                <form method="POST" action="{{form.form_url}}" style="height: calc(100% - 38px);" class=' d-flex flex-column' enctype="multipart/form-data">
+                    <div class="overflow-auto border-bottom px-2 " >
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if field|input_type == 'HiddenInput' %}
+                                {{field}}
+                            {% else %}
+                            <div class="mb-3">
+                                <label for="{{field.name}}" class="form-label">{{field.label}}</label>
+                                {{field|add_classes:'form-control'}}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class='d-flex flex-row-reverse'>
+                        <button type="submit" class="btn mt-2 mx-2 btn-primary">Salvar</button>
+                        <!-- <a href="{% url 'documents:add' %}" class="btn btn-light text-nowrap mt-2" tabindex="-1" role="button" aria-disabled="true">Salvar e Novo </a> -->
+                        <button type="submit" class="btn mt-2 mx-2 btn-danger">Excluir</button>
+                    </div>
+                </form>  
+
+            </div>
+        </div>
+    </div>
+    <script>
+        
+        
+        document.querySelectorAll('.folder').forEach( element => {
+            element.addEventListener('click', function(e) {
+                let value = element.getAttribute('data-id');
+                if (element.classList.contains('selected'))
+                    value = ''
+                
+                document.querySelector('select[name="id_folder"]').value = value
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            function selectFolderTree( value ){
+                const elemento = document.querySelector(`.folder[data-id="${value}"]`)
+                if (elemento)
+                    elemento.click()
+            }
+            document.querySelector('select[name="id_folder"]').addEventListener('change', (e) => {
+            selectFolderTree(e.target.value)
+            })
+            selectFolderTree(document.querySelector('select[name="id_folder"]').value)
+
+        }, false);
+        
+    </script>
+{% endblock %}

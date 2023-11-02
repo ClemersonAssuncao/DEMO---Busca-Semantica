@@ -29,11 +29,4 @@ document.querySelector('.context-menu').addEventListener('mouseleave', (e) => {
     e.fromElement.classList.remove('show')
 })
 
-document.querySelectorAll('.folder').forEach( element => {
-
-    element.addEventListener('click', function(e) {
-        
-        
-    });
-});
 

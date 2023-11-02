@@ -32,9 +32,9 @@ class File(models.Model):
 
     id = models.AutoField(verbose_name="Seq.", primary_key=True, auto_created=True)
     name = models.CharField(verbose_name='Nome', max_length=255)
-    file = models.FileField(verbose_name='file')
+    file = models.FileField(verbose_name='Arquivo')
     description = models.TextField(verbose_name='Descrição', max_length=255)
-    id_folder = models.ForeignKey(Folder, on_delete=models.PROTECT)
+    id_folder = models.ForeignKey(Folder, on_delete=models.PROTECT, verbose_name='Pasta')
 
     # Audit
     dt_created = models.DateTimeField(verbose_name='Data de criação', auto_now_add=True, null=True)
@@ -46,8 +46,6 @@ class File(models.Model):
         return self.name
     
     def getColumnsToGrid():
-        fields = ['id','name', 'description', 'id_folder']
-        newList =[]
-        for genObject in ((x) for x in File._meta.get_fields() if x.attname in fields):
-            newList.append({'attname': genObject.attname, 'verbose_name': genObject.verbose_name})
+        fields = ['id','name', 'description', 'id_folder', 'file']
+        newList = [ {'attname': column, 'verbose_name': str(getattr(File,column).field._verbose_name)} for column in fields if hasattr(File, column)]
         return newList

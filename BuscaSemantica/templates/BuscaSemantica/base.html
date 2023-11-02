@@ -68,7 +68,11 @@
         </footer>
         <!-- Bootstrap core JS-->
         <script src="{% static 'BuscaSemantica/js/bootstrap.bundle.min.js' %}"></script>
+        {% if user.is_authenticated %}
         <script src="{% static 'BuscaSemantica/js/script.js' %}"></script>
+        <script src="{% static 'BuscaSemantica/js/models.js' %}"></script>
+        <script src="{% static 'BuscaSemantica/js/service.js' %}"></script>
+        {% endif %}
         <!-- Core theme JS-->
         <!-- <script src="js/scripts.js"></script> -->
     </body>

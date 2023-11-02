@@ -11,7 +11,7 @@
                     <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
                 </div>
                 <div class='d-flex justify-content-center pt-3'>
-                    <button type="button" class="btn btn-light">
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#add_edit_folder">
                         <i class="bi bi-folder-plus" style="margin-right:5px"></i>
                         Incluir pasta
                     </button>
@@ -26,29 +26,123 @@
                 <i class="bi bi-search"></i>
                 <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
             </div>
-            <div class='py-2'>
-                <span class="badge rounded-pill text-bg-secondary text-white">Secondary <i class="bi bi-x"></i> </span>
+            
+            <div class='py-2 w-100' id='filter-folder'>
+                    
             </div>
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    {% for column in metadata.columns %}
-                        <th scope="col">{{column.verbose_name}}</th>
-                    {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                    {% for row in metadata.content %}
-                        <tr>
-                            {% for column in metadata.columns %}
-                                <td><a href="{% url 'material:material_edit' row.id %}">{{row|get_obj_attr:column.attname}} </a></td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>           
+            <div class='overflow-auto border' style="height: calc(100% - 38px);">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        {% for column in metadata.columns %}
+                            {%if column.attname == 'id' %}
+                                <th style="text-align: right">{{column.verbose_name}}</th>
+                            {% elif column.attname == 'file' %}
+                                <th scope="col" class="text-center">{{column.verbose_name}}</th>
+                            {% else %}
+                                <th scope="col">{{column.verbose_name}}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in metadata.content %}
+                            <tr>
+                                {% for column in metadata.columns %}
+                                    {%if column.attname == 'id' %}
+                                        <td style="text-align: right">
+                                            <a class="nav-link text-primary d-flex flex-row justify-content-end " href="{% url 'documents:edit' row.id %}"> 
+                                                <i class="bi bi-pencil-square d-flex  d-none"  style='margin-right:10px'></i> 
+                                                <span>{{row|get_obj_attr:column.attname}} </span>
+                                            </a>
+                                        </td>
+                                    {% elif column.attname == 'file' %}
+                                        
+                                        <td class="text-center">
+                                            {%if row|get_obj_attr:column.attname %}
+                                                <a href="/media/{{row|get_obj_attr:column.attname}}" download> 
+                                                    <i class="bi bi-filetype-pdf"></i> 
+                                                </a>
+                                            {% endif %}
+                                            </td>
+                                    {% else %}
+                                        <td>{{row|get_obj_attr:column.attname}} </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>  
+            </div>  
+            <div class="d-flex flex-row  flex-row-reverse pt-2">
+                <a href="{% url 'documents:add' %}" class="btn btn-primary text-nowrap" tabindex="-1" role="button" aria-disabled="true"> <i class="bi bi-plus"></i>  <span class="text-nowrap">Incluir Documento</span></a>
+    
+            </div>       
         </div>
     </div>
 </div>
+ 
+<div class="modal" tabindex="-1" id="add_edit_folder">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form onsubmit="return addEditFolder(event)" >
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="id_folder">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nome da pasta</label>
+                        <input type="text" class='form-control' name="name" maxlength="255" required="" id="name_folder">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Pasta superior</label>
+                        <select class='form-control' name="id_parent_dir" required="" id="id_parent_folder">
+                            <option value="" selected="">---------</option>
+                            {% for folder in folders %}
+                                <option value="{{folder.id}}">{{folder.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+                        
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    tbody tr:hover td .bi-pencil-square{
+        display: block !important;
+    }
+</style>
+<script>
 
+    function addEditFolder(ev){
+        folder = new Folder(ev.srcElement, document.querySelector('#folder-tree'))
+        folder.addSaveFolder().then( data => {
+            console.log(data)
+        });
+        return false
+    }
+    
+    document.querySelectorAll('.folder').forEach( element => {
+        element['folder-filter'] = document.querySelector('#filter-folder')
+        element.addEventListener('click', function(e) {
+            const folder = document.createElement('span');
+            folder.className = 'badge rounded-pill text-bg-secondary text-white mx-1';
+            folder.setAttribute('role','button');
+            folder.setAttribute('data-id', element.getAttribute('data-id'));
+            folder.textContent = element.textContent;
+            folder.innerHTML += '<i class="bi bi-x"></i>'
+            folder.addEventListener('click', () => folder.remove())
+            element['folder-filter'].appendChild(folder);
+        });
+    });
+</script>
 {% endblock %}
