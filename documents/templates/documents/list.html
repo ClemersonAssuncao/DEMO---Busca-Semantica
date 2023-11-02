@@ -11,7 +11,7 @@
                     <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
                 </div>
                 <div class='d-flex justify-content-center pt-3'>
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#add_edit_folder">
+                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-action-title="Incluir pasta" data-bs-target="#add_edit_folder">
                         <i class="bi bi-folder-plus" style="margin-right:5px"></i>
                         Incluir pasta
                     </button>
@@ -82,40 +82,6 @@
     </div>
 </div>
  
-<div class="modal" tabindex="-1" id="add_edit_folder">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form onsubmit="return addEditFolder(event)" >
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id" id="id_folder">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nome da pasta</label>
-                        <input type="text" class='form-control' name="name" maxlength="255" required="" id="name_folder">
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Pasta superior</label>
-                        <select class='form-control' name="id_parent_dir" required="" id="id_parent_folder">
-                            <option value="" selected="">---------</option>
-                            {% for folder in folders %}
-                                <option value="{{folder.id}}">{{folder.name}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-                        
-            </form>
-        </div>
-    </div>
-</div>
 <style>
     tbody tr:hover td .bi-pencil-square{
         display: block !important;
@@ -123,26 +89,6 @@
 </style>
 <script>
 
-    function addEditFolder(ev){
-        folder = new Folder(ev.srcElement, document.querySelector('#folder-tree'))
-        folder.addSaveFolder().then( data => {
-            console.log(data)
-        });
-        return false
-    }
-    
-    document.querySelectorAll('.folder').forEach( element => {
-        element['folder-filter'] = document.querySelector('#filter-folder')
-        element.addEventListener('click', function(e) {
-            const folder = document.createElement('span');
-            folder.className = 'badge rounded-pill text-bg-secondary text-white mx-1';
-            folder.setAttribute('role','button');
-            folder.setAttribute('data-id', element.getAttribute('data-id'));
-            folder.textContent = element.textContent;
-            folder.innerHTML += '<i class="bi bi-x"></i>'
-            folder.addEventListener('click', () => folder.remove())
-            element['folder-filter'].appendChild(folder);
-        });
-    });
+
 </script>
 {% endblock %}
