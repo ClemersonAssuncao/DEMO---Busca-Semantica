@@ -73,13 +73,13 @@
         <script src="{% static 'BuscaSemantica/js/models.js' %}"></script>
         <script src="{% static 'BuscaSemantica/js/service.js' %}"></script>
 
-        <div class="modal" tabindex="-1" id="delete_folder">
+        <div class="modal" tabindex="-1" id="delete_document">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form method="POST" action="{% url 'documents:delete' %}" >
                         {% csrf_token %}
                         <div class="modal-header">
-                            <h5 id='folder-action-title' class="modal-title">Deletar documento</h5>
+                            <h5 class="modal-title">Deletar documento</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
