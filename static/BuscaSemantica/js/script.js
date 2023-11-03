@@ -61,17 +61,4 @@ if (editFolder){
     })
 }
 
-document.querySelectorAll('.folder').forEach( element => {
-    element['folder-filter'] = document.querySelector('#filter-folder')
-    element.addEventListener('click', function(e) {
-        const folder = document.createElement('span');
-        folder.className = 'badge rounded-pill text-bg-secondary text-white mx-1';
-        folder.setAttribute('role','button');
-        folder.setAttribute('data-id', element.getAttribute('data-id'));
-        folder.textContent = element.textContent;
-        folder.innerHTML += '<i class="bi bi-x"></i>'
-        folder.addEventListener('click', () => folder.remove())
-        element['folder-filter'].appendChild(folder);
-    });
-});
 

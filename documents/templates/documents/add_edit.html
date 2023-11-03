@@ -25,7 +25,8 @@
                     <a class="nav-link" href="{% url 'documents:list' %}"><i class="bi bi-chevron-left" style="font-size: 1.25rem;margin-right:5px"></i></a>
                     <h3>{{form.form_title}}</h3>
                 </div>
-                <form method="POST" action="{{form.form_url}}" style="height: calc(100% - 38px);" class=' d-flex flex-column' enctype="multipart/form-data">
+                <form id='form_document' method="POST" onsubmit=" return false" action="{{form.form_url}}"  style="height: calc(100% - 38px);" class=' d-flex flex-column' enctype="multipart/form-data">
+                    <!--  -->
                     <div class="overflow-auto border-bottom px-2 " >
                         {% csrf_token %}
                         {% for field in form %}
@@ -50,7 +51,20 @@
                         <button type="button" data-bs-toggle="modal" data-bs-target="#delete_document" class="btn mt-2 mx-2 btn-danger">Excluir</button>
                     </div>
                 </form>  
-
+                <script>
+                    document.querySelector('#form_document').addEventListener('submit', (ev)=>{
+                        const id = '{{form.instance.id|default_if_none:""}}'
+                        const name = document.querySelector('input[name="name"]').value;
+                        const description = document.querySelector('textarea[name="description"]').value;
+                        const file = document.querySelector('input[name="file"]').files[0];
+                        const id_folder = document.querySelector('select[name="id_folder"]').value;
+                        
+                        save = new Server();
+                        save.saveDocument('{{form.form_url}}', id, name, description, file, id_folder).then( data => {
+                            console.log(data)
+                        })
+                    })
+                </script>
             </div>
         </div>
     </div>

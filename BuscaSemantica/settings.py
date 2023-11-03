@@ -74,6 +74,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BuscaSemantica.wsgi.application'
 
+DF_FILE_NAME = BASE_DIR / 'DataFrame.csv'
+OPEN_IA_TOKEN = "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"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

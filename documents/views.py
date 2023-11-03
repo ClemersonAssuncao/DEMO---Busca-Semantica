@@ -5,6 +5,8 @@ from .models import Folder, File
 from .forms import FileForm, FolderForm
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
+from BuscaSemantica.openIAService import OpenIAService
+from asgiref.sync import sync_to_async
 # Create your views here.
 
 @login_required(redirect_field_name="users:login")
@@ -24,16 +26,16 @@ def document_add_edit(request, pk = None):
         else: 
             documentModel = get_object_or_404(File, pk=pk)
             form = FileForm(data = request.POST, instance= documentModel)
-
         if (form.is_valid()):
             document = form.save(commit=False)
             filepath = request.FILES.get('file', False)
             if (filepath):
                 document.file = filepath
+                print(filepath)
             document.user_created = request.user
             document.save()
-            # return redirect("documents:edit", pk = document.id )
-            return redirect("documents:list" )
+            OpenIAService().appendInstance(document )
+            return JsonResponse({'saved': True})
     else:
         if (pk is None):
             form = FileForm()
@@ -73,6 +75,8 @@ def delete_folder(request, pk = None):
 def document_delete(request, pk = None):
 
     file =  get_object_or_404(File, pk=pk)
+    OpenIAService().deleteInstance(file)
     file.delete()
+
     return redirect("documents:list" )
 

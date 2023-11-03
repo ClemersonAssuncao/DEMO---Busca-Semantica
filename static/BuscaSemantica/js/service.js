@@ -4,6 +4,16 @@ function Server() {
 
 Server.prototype = {
 
+    async saveDocument(url, id, name, description, file, folder) {
+        const parameter = new FormData();
+        parameter.append('csrfmiddlewaretoken', this.getCrtfToken());
+        parameter.append('id', id);
+        parameter.append('name', name);
+        parameter.append('description', description);
+        parameter.append('file', file);
+        parameter.append('id_folder', folder);
+        return await this.send('POST', `${url}`, parameter);
+    },
     async addSaveFolder(id, name, parent_id) {
         const parameter = new FormData();
         parameter.append('id', id);

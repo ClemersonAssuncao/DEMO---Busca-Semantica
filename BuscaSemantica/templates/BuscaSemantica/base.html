@@ -75,7 +75,7 @@
         <div class="modal" tabindex="-1" id="delete_document">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form method="POST" {% if form and form.instance %}action="{% url 'documents:delete' form.instance.id %}" {% endif%}>
+                    <form method="POST" {% if form and form.instance.id %}action="{% url 'documents:delete' form.instance.id %}" {% endif%}>
                         {% csrf_token %}
                         <div class="modal-header">
                             <h5 class="modal-title">Deletar documento</h5>
