@@ -13,7 +13,7 @@ def document_list(request):
         'columns': File.getColumnsToGrid(),
         'content': File.objects.all()
     }
-    return render(request, 'documents/list.html', {'metadata' : metadata,'formFolder': FolderForm(),'folders': Folder.create_folder_tree()})
+    return render(request, 'documents/list.html', {'metadata' : metadata,'formFolder': FolderForm(),'folders': Folder.create_folder_tree(), 'folders_list' : Folder.objects.all()})
 
 
 @login_required(redirect_field_name="users:login")
@@ -44,15 +44,35 @@ def document_add_edit(request, pk = None):
             form = FileForm(instance = documentModel)
             setattr(form, 'form_url', f'/documents/edit/{pk}')
             setattr(form, 'form_title', 'Editar documento ')
-    return render(request, "documents/add_edit.html", {"form": form, 'folders': Folder.create_folder_tree()})   
+    return render(request, "documents/add_edit.html", {"form": form, 'folders': Folder.create_folder_tree(), 'folders_list' : Folder.objects.all()})   
 
 @login_required()
 @api_view(('POST',))
 def folder_add_edit(request, pk = None):
 
     folder, created = Folder.objects.get_or_create(id=pk)
-    if created:
-        folder.name = request.POST.get('name','')
-        folder.id_parent_dir = Folder.objects.get(id=request.POST.get('id_parent_dir', None))
-        folder.save()
+    folder.name = request.POST.get('name','')
+    try:
+        folder.id_parent_dir =  Folder.objects.get(id=request.POST.get('id_parent_dir', None))
+    except Folder.DoesNotExist:
+        pass
+    
+    folder.save()
     return JsonResponse({'created': created, 'id': folder.id})
+
+@login_required()
+@api_view(('POST',))
+def delete_folder(request, pk = None):
+
+    folder =  get_object_or_404(Folder, pk=pk)
+    folder.delete()
+    return JsonResponse({'deleted': True})
+
+@login_required()
+@api_view(('POST',))
+def document_delete(request, pk = None):
+
+    file =  get_object_or_404(File, pk=pk)
+    file.delete()
+    return redirect("documents:list" )
+

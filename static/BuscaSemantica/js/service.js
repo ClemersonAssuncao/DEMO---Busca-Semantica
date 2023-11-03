@@ -9,7 +9,10 @@ Server.prototype = {
         parameter.append('id', id);
         parameter.append('name', name);
         parameter.append('id_parent_dir', parent_id);
-        return await this.send('POST', '/documents/folder/', parameter);
+        return await this.send('POST', `/documents/folder/${id}`, parameter);
+    },
+    async deleteFolder(id) {
+        return await this.send('POST', `/documents/delete_folder/${id}`);
     },
     getCrtfToken() {
         return document.getElementsByName('csrfmiddlewaretoken')[0].value;
@@ -41,7 +44,7 @@ Server.prototype = {
                     statusText: xhr.statusText
                 });
             };
-            xhr.send(parameter);
+            xhr.send(parameter || new FormData());
         });
     },
 }

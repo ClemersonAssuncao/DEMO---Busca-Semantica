@@ -1,7 +1,7 @@
 
     {% for child in item %}
     
-        <li class="mb-1" style='margin-left:10px'  data-id="{{child.id}}" >
+        <li class="mb-1" style='margin-left:10px'  data-id="{{child.id}}"  data-parent="{{child.parent}}">
             <div class="dropdown-context-menu" data-option='#context-menu-folder'>
                 <button class="btn btn-toggle align-items-center rounded " data-bs-toggle="collapse" data-bs-target="#folder-{{child.id}}" aria-expanded="false">
                     <i class="bi bi-caret-right"></i> 

@@ -1,7 +1,12 @@
 document.querySelectorAll('.dropdown-context-menu').forEach( element => {
     element.addEventListener('contextmenu', function(e) {
         e.preventDefault();
-        document.querySelector('#add_edit_folder input[name="id"]').value = e.currentTarget.parentElement.getAttribute('data-id');
+        const id = e.currentTarget.parentElement.getAttribute('data-id')
+        document.querySelector('#add_edit_folder input[name="id"]').value = id;
+        document.querySelector('#delete_folder input[name="id"]').value = id;
+        document.querySelector('#add_edit_folder input[name="name"]').value = e.currentTarget.querySelector(`.folder[data-id="${id}"]`).textContent;
+        if (e.currentTarget.parentElement.getAttribute('data-parent') != "None")
+            document.querySelector('#add_edit_folder select[name="id_parent_dir"]').value = e.currentTarget.parentElement.getAttribute('data-parent');
         const contextMenu = document.querySelector(element.getAttribute('data-option'));
         contextMenu.classList.add('show')
         if (document.body.clientHeight < contextMenu.clientHeight + e.screenY ){
@@ -24,23 +29,37 @@ document.querySelectorAll('.selection-element').forEach( element => {
         element.classList.add('selected')
     });
 });
-
-document.querySelector('.context-menu').addEventListener('mouseleave', (e) => {
-
-    e.fromElement.classList.remove('show')
-})
+const context = document.querySelector('.context-menu')
+if (context){
+    context.addEventListener('mouseleave', (e) => {
+    
+        e.fromElement.classList.remove('show')
+    })
+}
 
 function addEditFolder(ev){
     folder = new Folder(ev.srcElement, document.querySelector('#folder-tree'))
-    folder.addSaveFolder().then( data => {
-        console.log(data)
-    });
+    folder.addSaveFolder();
     return false
 }
 
-document.querySelector('#add_edit_folder').addEventListener('shown.bs.modal', (ev) => {
-    ev.srcElement.querySelector('#folder-action-title').textContent = ev.relatedTarget.getAttribute('data-action-title');
-})
+function deleteFolder(){
+    folder = new Folder(document.querySelector('#delete_folder'), document.querySelector('#folder-tree'))
+    folder.deleteFolder();
+    return false
+}
+
+const editFolder = document.querySelector('#add_edit_folder');
+if (editFolder){
+    editFolder.addEventListener('shown.bs.modal', (ev) => {
+        ev.srcElement.querySelector('#folder-action-title').textContent = ev.relatedTarget.getAttribute('data-action-title');
+        if (ev.relatedTarget.getAttribute('data-action') != 'edit'){
+            document.querySelector('#add_edit_folder input[name="id"]').value = '';
+            document.querySelector('#add_edit_folder input[name="name"]').value = '';
+            document.querySelector('#add_edit_folder select[name="id_parent_dir"]').value = '';
+        }
+    })
+}
 
 document.querySelectorAll('.folder').forEach( element => {
     element['folder-filter'] = document.querySelector('#filter-folder')

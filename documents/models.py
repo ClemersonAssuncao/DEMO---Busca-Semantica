@@ -18,13 +18,13 @@ class Folder(models.Model):
             for child in children:
                 if ('children' not in parent):
                     parent['children'] = []
-                parent['children'].append(get_child({'id': child.id, 'name': child.name}))
+                parent['children'].append(get_child({'id': child.id, 'name': child.name, 'parent': parent['id']}))
                 
             return parent
         directories = Folder.objects.all().filter(id_parent_dir=None)
         dirTree = []
         for dir in directories:
-            dirTree.append(get_child({'id': dir.id, 'name': dir.name}))
+            dirTree.append(get_child({'id': dir.id, 'name': dir.name, 'parent': None}))
         
         return dirTree
 

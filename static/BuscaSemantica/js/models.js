@@ -6,12 +6,23 @@ function Folder(elementForm, elementTree) {
 };
 Folder.prototype = {
 
+    async deleteFolder(){
+        const id = this.form.querySelector('*[name="id"]').value
+        return this.service.deleteFolder(id).then( (data) => {
+            const jsonReturn = JSON.parse(data);
+            if (jsonReturn.deleted){
+                this.tree.querySelector(`li[data-id="${id}"]`).remove()
+            }
+            const modal = bootstrap.Modal.getInstance(document.querySelector('#delete_folder'))
+            modal.hide()
+        });
+    },
     async addSaveFolder(){
         id = this.form.querySelector('*[name="id"]').value
         nameFolder = this.form.querySelector('*[name="name"]').value
         parent_id = this.form.querySelector('*[name="id_parent_dir"]').value
 
-        this.service.addSaveFolder(id, nameFolder, parent_id).then( (data) => {
+        return this.service.addSaveFolder(id, nameFolder, parent_id).then( (data) => {
             
             const jsonReturn = JSON.parse(data);
             if (jsonReturn.created){
@@ -31,12 +42,17 @@ Folder.prototype = {
                                             </ul>
                                         </div>`
                 this.tree.querySelector(`li[data-id='${parent_id}'] ul`).appendChild(dropdown)
-            } else {
+                document.querySelector('#id_parent_folder').innerHTML += `<option value="${jsonReturn.id}">${nameFolder}</option>`
                 
+            } else {
+                const element = this.tree.querySelector(`li[data-id='${id}']`);
+                element.querySelector(`span.folder[data-id='${id}']`).textContent = nameFolder;
+                if (element.getAttribute('data-parent') != parent_id){
+                    this.tree.querySelector(`li[data-id='${parent_id}'] ul`).appendChild(element)
+                }
             }
-            
-            botText.id
-            console.log(botText)
+            const modal = bootstrap.Modal.getInstance(document.querySelector('#add_edit_folder'))
+            modal.hide()
         });
     },
 }
