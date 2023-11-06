@@ -8,7 +8,7 @@
             <div class='border-bottom p-3'>
                 <div class="inner-addon right-addon">
                     <i class="bi bi-search"></i>
-                    <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+                    <input class="form-control" id="folder-name" onkeyup="myFunction()" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
                 </div>
                 <div class='d-flex justify-content-center pt-3'>
                     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-action-title="Incluir pasta" data-bs-target="#add_edit_folder">
@@ -17,14 +17,14 @@
                     </button>
                 </div>
             </div>
-            <div class='overflow-auto'>
+            <div class='overflow-auto' id="tree-items">
                 {% include "componentes/dc-tree/dc-tree.html" with dc_tree=folders %}
             </div>
         </div>
         <div class="card d-flex flex-column flex-shrink-0 p-3 h-100" style="width: calc(100% - 290px);">
             <div class="inner-addon right-addon">
                 <i class="bi bi-search"></i>
-                <input class="form-control" id="name" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+                <input class="form-control" id="doc-name" type="text" placeholder="Pesquisar documento..." data-sb-validations="required" />
             </div>
             
             <div class='py-2 w-100' id='filter-folder'>
@@ -47,12 +47,12 @@
                     </thead>
                     <tbody>
                         {% for row in metadata.content %}
-                            <tr>
+                            <tr data-bs-toggle="tooltip" data-bs-placement="top" title="{{ row.name }}">
                                 {% for column in metadata.columns %}
                                     {%if column.attname == 'id' %}
                                         <td style="text-align: right">
                                             <a class="nav-link text-primary d-flex flex-row justify-content-end " href="{% url 'documents:edit' row.id %}"> 
-                                                <i class="bi bi-pencil-square d-flex  d-none"  style='margin-right:10px'></i> 
+                                                <i class="bi bi-pencil-square d-flex  d-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar" style='margin-right:10px'></i> 
                                                 <span>{{row|get_obj_attr:column.attname}} </span>
                                             </a>
                                         </td>
@@ -61,7 +61,7 @@
                                         <td class="text-center">
                                             {%if row|get_obj_attr:column.attname %}
                                                 <a href="/media/{{row|get_obj_attr:column.attname}}" download> 
-                                                    <i class="bi bi-filetype-pdf"></i> 
+                                                    <i class="bi bi-filetype-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Fazer download do arquivo"></i> 
                                                 </a>
                                             {% endif %}
                                             </td>
@@ -75,7 +75,7 @@
                 </table>  
             </div>  
             <div class="d-flex flex-row  flex-row-reverse pt-2">
-                <a href="{% url 'documents:add' %}" class="btn btn-primary text-nowrap" tabindex="-1" role="button" aria-disabled="true"> <i class="bi bi-plus"></i>  <span class="text-nowrap">Incluir Documento</span></a>
+                <a href="{% url 'documents:add' %}" class="btn btn-primary text-nowrap" tabindex="-1" role="button" aria-disabled="true"> <i class="bi bi-plus"></i>  <span class="text-nowrap">Incluir documento</span></a>
     
             </div>       
         </div>
@@ -95,6 +95,90 @@
             element['folder-filter'].appendChild(folder);
         });
     });
+
+    // Função que mostra o valor do input num alert
+    function mostrarValor() {
+        filter = document.getElementById("folder-name").value.toUpperCase();
+        tree = document.getElementsByClassName("dropdown-context-menu");
+        
+        // alert(tree);
+        // alert(document.getElementsByClassName("dropdown-context-menu").length);
+
+        for (i = 0; i < tree.length; i++) {
+          td = tree[i].innerText;
+          if (td) {
+            // txtValue = td.textContent || td.innerText;
+            console.log(filter.indexOf(td.toUpperCase()));
+            if (td.toUpperCase().indexOf(filter) > -1) {
+              td[i].style.display = "";
+            } else {
+              td[i].style.display = "none";
+            }
+          }       
+        }
+        // console.log(tree);
+    }
+
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("folder-name");
+
+        input.classList.toggle('d-None');
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tree-items");
+        tr = table.getElementsByTagName("span");
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("span")[0];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }       
+        }
+      }
+
+    function filterSelection(c) {
+  var x, i;
+  x = document.getElementsByClassName("filterDiv");
+  if (c == "all") c = "";
+  for (i = 0; i < x.length; i++) {
+    w3RemoveClass(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+  }
+}
+
+function w3AddClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+  }
+}
+
+function w3RemoveClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+    }
+  }
+  element.className = arr1.join(" ");
+}
+
+    // Evento que é executado toda vez que uma tecla for pressionada no input
+    document.getElementById("folder-name").onkeypress = function(e) {
+        // 13 é a tecla ENTER, se ela for pressionada, mostrar o valor
+        if (e.keyCode == 13) {
+            mostrarValor();
+            e.preventDefault();
+        }
+    }
 </script>
 <style>
     tbody tr:hover td .bi-pencil-square{

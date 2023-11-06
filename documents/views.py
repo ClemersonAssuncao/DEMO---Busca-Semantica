@@ -7,7 +7,6 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from BuscaSemantica.openIAService import OpenIAService
 from asgiref.sync import sync_to_async
-# Create your views here.
 
 @login_required(redirect_field_name="users:login")
 def document_list(request):
@@ -34,7 +33,7 @@ def document_add_edit(request, pk = None):
                 print(filepath)
             document.user_created = request.user
             document.save()
-            OpenIAService().appendInstance(document )
+            OpenIAService().appendInstance(document)
             return JsonResponse({'saved': True})
     else:
         if (pk is None):

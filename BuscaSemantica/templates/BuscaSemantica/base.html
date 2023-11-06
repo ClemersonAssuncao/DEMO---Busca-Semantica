@@ -8,7 +8,7 @@
         <meta name="author" content="" />
         <title>Busca Semantica</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- <link rel="icon" type="image/x-icon" href="BuscaSemantica/assets/artificial-intelligence.png" /> -->
         <!-- Custom Google font-->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,26 +20,38 @@
     </head>
     <body class="d-flex flex-column h-100">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
-            <div class="container px-5">
-                <a class="navbar-brand" href="/"><span class="fw-bolder text-primary">Busca Semantica</span></a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 ">
+            <div class="container px-5 inner-addon left-addon">
+                
+                <a class="navbar-brand" href="/">
+                    <img class="img-fluid" src="{% static 'BuscaSemantica/assets/logo_2.png' %}" alt="..." />
+                    <span class="fw-bolder text-gradient">Busca Semantica</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
                         {% if user.is_authenticated %}
                         
                         <li class="nav-item">
-                            <a class="nav-link text-gradient" href="{% url 'documents:list' %}">
-                                <i class="bi bi-gear-fill"></i> Gerenciar Documentos
+                            <a class="nav-link" href="{% url 'documents:list' %}">
+                                Gerenciar documentos
                             </a>
                         </li>	
                         {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% if user.is_authenticated %}/about/{% endif %}#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/">Página inicial</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% if user.is_authenticated %}/about/{% endif %}#about">Sobre</a></li>
                         {% if not user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Entrar</a></li>
                         {% else %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Sair</a></li>
+                        <li class="nav-item dropdown">
+                            
+                            <a class="nav-link bi-person-circle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{user.get_username}}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                              <li><a class="dropdown-item" type="button" href="{% url 'users:logout' %}">Sair</a></li>
+                            </ul>
+                          
                         {% endif %}
                     </ul>
                 </div>
@@ -56,13 +68,6 @@
             <div class="container px-5">
                 <div class="row align-items-center justify-content-between flex-column flex-sm-row">
                     <div class="col-auto"><div class="small m-0">Copyright &copy; Busca Semantica 2023</div></div>
-                    <div class="col-auto">
-                        <!-- <a class="small" href="#!">Privacy</a>
-                        <span class="mx-1">&middot;</span>
-                        <a class="small" href="#!">Terms</a>
-                        <span class="mx-1">&middot;</span> -->
-                        <a class="small" href="#!">Contatos</a>
-                    </div>
                 </div>
             </div>
         </footer>

@@ -28,3 +28,6 @@ def logout_user(request):
         return redirect("search:index")
 
     return render(request, 'users/logout.html')
+
+def password_user(request):
+    return render(request, 'users/password.html')
