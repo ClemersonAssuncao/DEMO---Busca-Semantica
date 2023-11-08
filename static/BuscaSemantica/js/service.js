@@ -1,47 +1,32 @@
-function Server() {
-    
+function Server(icon) {
+    this.loader = document.querySelector('#loader-service');
+    this.loader.querySelector('i').className = `bi ml-1 ${icon}`
 }
 
 Server.prototype = {
-
-    async saveDocument(url, id, name, description, file, folder) {
-        const parameter = new FormData();
-        parameter.append('csrfmiddlewaretoken', this.getCrtfToken());
-        parameter.append('id', id);
-        parameter.append('name', name);
-        parameter.append('description', description);
-        parameter.append('file', file);
-        parameter.append('id_folder', folder);
-        return await this.send('POST', `${url}`, parameter);
-    },
-    async addSaveFolder(id, name, parent_id) {
-        const parameter = new FormData();
-        parameter.append('id', id);
-        parameter.append('name', name);
-        parameter.append('id_parent_dir', parent_id);
-        return await this.send('POST', `/documents/folder/${id}`, parameter);
-    },
-    async deleteFolder(id) {
-        return await this.send('POST', `/documents/delete_folder/${id}`);
-    },
+    
     getCrtfToken() {
         return document.getElementsByName('csrfmiddlewaretoken')[0].value;
     },
     send(method, url, parameter){
+        this.loader.classList.remove('d-none');
+        document.body.appendChild(this.loader);
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();  
             xhr.open(method, url);
             xhr.setRequestHeader('X-CSRFToken', this.getCrtfToken());  
-            xhr.upload.onprogress = function(event) {
+            xhr.upload.onprogress = (event) => {
                 if (event.lengthComputable) {
-                    console.log(event)
+                    // console.log(event)
                 }
             };
-            
+            self = this;
             xhr.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
+                    self.loader.classList.add('d-none')
                     resolve(xhr.response);
                 } else {
+                    self.loader.classList.add('d-none')
                     reject({
                         status: this.status,
                         statusText: xhr.statusText

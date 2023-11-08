@@ -1,12 +1,12 @@
 
     {% for child in item %}
     
-        <li class="mb-1" style='margin-left:10px'  data-id="{{child.id}}"  data-parent="{{child.parent}}">
-            <div class="dropdown-context-menu" data-option='#context-menu-folder'>
+        <li class="mb-1" style='margin-left:10px'>
+            <div class="dropdown-context-menu tree-item" data-option='#context-menu-folder' data-id="{{child.id}}" data-name="{{child.name}}">
                 <button class="btn btn-toggle align-items-center rounded " data-bs-toggle="collapse" data-bs-target="#folder-{{child.id}}" aria-expanded="false">
                     <i class="bi bi-caret-right"></i> 
                 </button>
-                <span role="button" class='selection-element folder' data-selection=".folder" data-id="{{child.id}}" >{{child.name}}</span>
+                <span role="button" class='selection-element'>{{child.name}}</span>
             </div>
             <div class="collapse show" id="folder-{{child.id}}">
                 <ul class="list-unstyled btn-toggle-nav fw-normal pb-1">

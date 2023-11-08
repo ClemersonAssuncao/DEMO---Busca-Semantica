@@ -100,62 +100,12 @@
             </div>
         </div>
 
-        <div class="modal" tabindex="-1" id="delete_folder">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form method="POST" onsubmit="return false">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h5 class="modal-title">Deletar pasta</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Deseja realmente excluir esta pasta? <br>
-                            <input type="hidden" name="id" id="id_folder">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
-                            <button type="button" onclick='deleteFolder()' class="btn btn-danger">Excluir</button>
-                        </div>
-                                
-                    </form>
-                </div>
-            </div>
-        </div>
+        <script src="{% static 'BuscaSemantica/js/folder-controll.js' %}"></script>
         {% endif %}
         
-        <div class="modal" tabindex="-1" id="add_edit_folder">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form onsubmit="return addEditFolder(event)" >
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h5 id='folder-action-title' class="modal-title">Modal title</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="id" id="id_folder">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Nome da pasta</label>
-                                <input type="text" class='form-control' name="name" maxlength="255" required="" id="name_folder">
-                            </div>
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Pasta superior</label>
-                                <select class='form-control' name="id_parent_dir" id="id_parent_folder">
-                                    <option value="" selected="">---------</option>
-                                    {% for folder in folders_list %}
-                                        <option value="{{folder.id}}">{{folder.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                        </div>
-                                
-                    </form>
-                </div>
+        <div class="modal-backdrop show d-none align-items-center d-flex justify-content-center" id="loader-service" style="z-index: 9999;">
+            <div class="spinner-border text-light p-5 align-items-center d-flex" style="width: 100px; height: 100px; font-size: 4rem;" role="status">
+                <i class="ml-1 bi"></i>
             </div>
         </div>
         <script src="{% static 'BuscaSemantica/js/script.js' %}"></script>

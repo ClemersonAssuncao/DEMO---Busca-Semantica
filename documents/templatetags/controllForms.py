@@ -23,3 +23,8 @@ def add_classes(value, arg):
 @register.filter
 def get_obj_attr(obj, attr):
     return getattr(obj, attr)
+
+@register.filter
+def get_obj_id(obj, attr):
+    return getattr(obj, attr).id
+

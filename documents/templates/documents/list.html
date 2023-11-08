@@ -8,17 +8,17 @@
             <div class='border-bottom p-3'>
                 <div class="inner-addon right-addon">
                     <i class="bi bi-search"></i>
-                    <input class="form-control" id="folder-name" onkeyup="myFunction()" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+                    <input class="form-control" id="folder-filter" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
                 </div>
                 <div class='d-flex justify-content-center pt-3'>
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-action-title="Incluir pasta" data-bs-target="#add_edit_folder">
+                    <button type="button" class="btn btn-light" onclick="window.FolderTree.viewModalAddEdit(new Folder())">
                         <i class="bi bi-folder-plus" style="margin-right:5px"></i>
                         Incluir pasta
                     </button>
                 </div>
             </div>
             <div class='overflow-auto' id="tree-items">
-                {% include "componentes/dc-tree/dc-tree.html" with dc_tree=folders %}
+                {% include "documents/folder-tree/folder-tree.html" with folder_tree=folders %}
             </div>
         </div>
         <div class="card d-flex flex-column flex-shrink-0 p-3 h-100" style="width: calc(100% - 290px);">
@@ -50,7 +50,7 @@
                             <tr data-bs-toggle="tooltip" data-bs-placement="top" title="{{ row.name }}">
                                 {% for column in metadata.columns %}
                                     {%if column.attname == 'id' %}
-                                        <td style="text-align: right">
+                                        <td class='{{column.attname}}' style="text-align: right; width: 70px;">
                                             <a class="nav-link text-primary d-flex flex-row justify-content-end " href="{% url 'documents:edit' row.id %}"> 
                                                 <i class="bi bi-pencil-square d-flex  d-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar" style='margin-right:10px'></i> 
                                                 <span>{{row|get_obj_attr:column.attname}} </span>
@@ -58,15 +58,17 @@
                                         </td>
                                     {% elif column.attname == 'file' %}
                                         
-                                        <td class="text-center">
+                                        <td class="text-center {{column.attname}}">
                                             {%if row|get_obj_attr:column.attname %}
                                                 <a href="/media/{{row|get_obj_attr:column.attname}}" download> 
                                                     <i class="bi bi-filetype-pdf" data-bs-toggle="tooltip" data-bs-placement="top" title="Fazer download do arquivo"></i> 
                                                 </a>
                                             {% endif %}
                                             </td>
+                                    {% elif column.attname == 'id_folder' %}
+                                        <td class='{{column.attname}}' data-id="{{row|get_obj_id:column.attname}}">{{row|get_obj_attr:column.attname}} </td>
                                     {% else %}
-                                        <td>{{row|get_obj_attr:column.attname}} </td>
+                                        <td class='{{column.attname}}'>{{row|get_obj_attr:column.attname}} </td>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
@@ -82,63 +84,50 @@
     </div>
 </div>
 <script>
-    document.querySelectorAll('.folder').forEach( element => {
-        element['folder-filter'] = document.querySelector('#filter-folder')
-        element.addEventListener('click', function(e) {
-            const folder = document.createElement('span');
-            folder.className = 'badge rounded-pill text-bg-secondary text-white mx-1';
-            folder.setAttribute('role','button');
-            folder.setAttribute('data-id', element.getAttribute('data-id'));
-            folder.textContent = element.textContent;
-            folder.innerHTML += '<i class="bi bi-x"></i>'
-            folder.addEventListener('click', () => folder.remove())
-            element['folder-filter'].appendChild(folder);
-        });
-    });
 
     // Função que mostra o valor do input num alert
-    function mostrarValor() {
-        filter = document.getElementById("folder-name").value.toUpperCase();
-        tree = document.getElementsByClassName("dropdown-context-menu");
+    // function mostrarValor() {
+    //     filter = document.getElementById("folder-name").value.toUpperCase();
+    //     tree = document.getElementsByClassName("dropdown-context-menu");
         
-        // alert(tree);
-        // alert(document.getElementsByClassName("dropdown-context-menu").length);
+    //     // alert(tree);
+    //     // alert(document.getElementsByClassName("dropdown-context-menu").length);
 
-        for (i = 0; i < tree.length; i++) {
-          td = tree[i].innerText;
-          if (td) {
-            // txtValue = td.textContent || td.innerText;
-            console.log(filter.indexOf(td.toUpperCase()));
-            if (td.toUpperCase().indexOf(filter) > -1) {
-              td[i].style.display = "";
-            } else {
-              td[i].style.display = "none";
-            }
-          }       
-        }
-        // console.log(tree);
-    }
+    //     for (i = 0; i < tree.length; i++) {
+    //       td = tree[i].innerText;
+    //       if (td) {
+    //         // txtValue = td.textContent || td.innerText;
+    //         console.log(filter.indexOf(td.toUpperCase()));
+    //         if (td.toUpperCase().indexOf(filter) > -1) {
+    //           td[i].style.display = "";
+    //         } else {
+    //           td[i].style.display = "none";
+    //         }
+    //       }       
+    //     }
+    //     // console.log(tree);
+    // }
 
-    function myFunction() {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("folder-name");
+    // function myFunction() {
+    //     var input, filter, table, tr, td, i, txtValue;
+    //     input = document.getElementById("folder-name");
 
-        input.classList.toggle('d-None');
-        filter = input.value.toUpperCase();
-        table = document.getElementById("tree-items");
-        tr = table.getElementsByTagName("span");
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("span")[0];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }       
-        }
-      }
+    //     input.classList.toggle('d-None');
+    //     filter = input.value.toUpperCase();
+    //     table = document.getElementById("tree-items");
+    //     tr = table.getElementsByTagName("span");
+    //     for (i = 0; i < tr.length; i++) {
+    //       td = tr[i].getElementsByTagName("span")[0];
+    //       if (td) {
+    //         txtValue = td.textContent || td.innerText;
+    //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
+    //           tr[i].style.display = "";
+    //         } else {
+    //           tr[i].style.display = "none";
+    //         }
+    //       }       
+    //     }
+    //   }
 
     function filterSelection(c) {
   var x, i;
@@ -172,13 +161,13 @@ function w3RemoveClass(element, name) {
 }
 
     // Evento que é executado toda vez que uma tecla for pressionada no input
-    document.getElementById("folder-name").onkeypress = function(e) {
-        // 13 é a tecla ENTER, se ela for pressionada, mostrar o valor
-        if (e.keyCode == 13) {
-            mostrarValor();
-            e.preventDefault();
-        }
-    }
+    // document.getElementById("folder-name").onkeypress = function(e) {
+    //     // 13 é a tecla ENTER, se ela for pressionada, mostrar o valor
+    //     if (e.keyCode == 13) {
+    //         mostrarValor();
+    //         e.preventDefault();
+    //     }
+    // }
 </script>
 <style>
     tbody tr:hover td .bi-pencil-square{

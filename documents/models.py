@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Folder(models.Model):
     id = models.AutoField(verbose_name="Sequência", primary_key=True, auto_created=True)
     name = models.CharField(verbose_name='Nome', max_length=50)
-    id_parent_dir = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
+    id_parent_dir = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name

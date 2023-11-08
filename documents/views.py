@@ -6,6 +6,7 @@ from .forms import FileForm, FolderForm
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from BuscaSemantica.openIAService import OpenIAService
+from django.db.models.deletion import ProtectedError
 from asgiref.sync import sync_to_async
 
 @login_required(redirect_field_name="users:login")
@@ -56,26 +57,31 @@ def folder_add_edit(request, pk = None):
     try:
         folder.id_parent_dir =  Folder.objects.get(id=request.POST.get('id_parent_dir', None))
     except Folder.DoesNotExist:
-        pass
-    
+        folder.id_parent_dir = None
     folder.save()
-    return JsonResponse({'created': created, 'id': folder.id})
+    return JsonResponse({'created': created, 'id': folder.id, 'name': folder.name, 'id_parent_dir': request.POST.get('id_parent_dir', None)})
 
 @login_required()
 @api_view(('POST',))
 def delete_folder(request, pk = None):
-
-    folder =  get_object_or_404(Folder, pk=pk)
-    folder.delete()
-    return JsonResponse({'deleted': True})
+    error = []
+    try:
+        folder =  get_object_or_404(Folder, pk=pk)
+        folder.delete()
+        return JsonResponse({'deleted': True})
+    except ProtectedError as e:
+        for files in e.protected_objects:
+            error.append({
+                'id': files.id,
+                'name': files.name
+            })
+        return JsonResponse({'deleted': False, 'error': error})
 
 @login_required()
 @api_view(('POST',))
 def document_delete(request, pk = None):
-
     file =  get_object_or_404(File, pk=pk)
     OpenIAService().deleteInstance(file)
     file.delete()
-
     return redirect("documents:list" )
 
