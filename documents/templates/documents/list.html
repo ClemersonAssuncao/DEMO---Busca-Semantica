@@ -5,21 +5,7 @@
 <div class="p-3 bg-light h-100">
     <div class="d-flex flex-row h-100">
         <div class="card d-flex flex-column flex-shrink-0 h-100" style="margin-right: 10px; width: 280px;">
-            <div class='border-bottom p-3'>
-                <div class="inner-addon right-addon">
-                    <i class="bi bi-search"></i>
-                    <input class="form-control" id="folder-filter" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
-                </div>
-                <div class='d-flex justify-content-center pt-3'>
-                    <button type="button" class="btn btn-light" onclick="window.FolderTree.viewModalAddEdit(new Folder())">
-                        <i class="bi bi-folder-plus" style="margin-right:5px"></i>
-                        Incluir pasta
-                    </button>
-                </div>
-            </div>
-            <div class='overflow-auto' id="tree-items">
-                {% include "documents/folder-tree/folder-tree.html" with folder_tree=folders %}
-            </div>
+            {% include "documents/folder-tree/folder-tree.html" with folder_tree=folders %}
         </div>
         <div class="card d-flex flex-column flex-shrink-0 p-3 h-100" style="width: calc(100% - 290px);">
             <div class="inner-addon right-addon">

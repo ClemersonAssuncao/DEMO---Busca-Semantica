@@ -1,0 +1,79 @@
+<div class='border-bottom p-3'>
+    <div class="inner-addon right-addon">
+        <i class="bi bi-search"></i>
+        <input class="form-control" id="folder-filter" type="text" placeholder="Pesquisar pasta..." data-sb-validations="required" />
+    </div>
+    <div class='d-flex justify-content-center pt-3'>
+        <button type="button" class="btn btn-light" onclick="window.FolderTree.viewModalAddEdit(new Folder())">
+            <i class="bi bi-folder-plus" style="margin-right:5px"></i>
+            Incluir pasta
+        </button>
+    </div>
+</div>
+<div class='overflow-auto' id="tree-items">
+    <ul type-component='folder-tree' id='folder-tree' class="list-unstyled dc-component">
+        {%include "documents/folder-tree/folder-tree-item.html" with item=folder_tree %}
+
+        <!-- Context Menu Element -->
+        <ul id='context-menu-folder' class="context-menu dropdown-menu">
+            <li><a class="dropdown-item" onclick='window.FolderTree.viewModalAddEdit()' href="#">Editar pasta</a></li>
+            <li><a class="dropdown-item" onclick='window.FolderTree.viewModalDelete()' href="#">Excluir pasta</a></li>
+        </ul>
+
+        <div class="modal" tabindex="-1" id="add_edit_folder">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form>
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 id='folder-action-title' class="modal-title">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" id="id_folder">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nome da pasta</label>
+                                <input type="text" class='form-control' name="name" maxlength="255" required="" id="name_folder">
+                            </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Pasta superior</label>
+                                <select class='form-control' name="id_parent_dir" id="id_parent_folder">
+                                    <option value="" selected="">---------</option>
+                                    {% for folder in folders_list %}
+                                        <option value="{{folder.id}}">{{folder.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                                
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" tabindex="-1" id="delete_folder">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Deletar pasta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class='text my-1'>Deseja realmente excluir esta pasta?</div>
+                        <div class='error'></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" id="button-delete" onclick='window.FolderTree.delete()' class="btn btn-danger">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ul>
+</div>
+
+
