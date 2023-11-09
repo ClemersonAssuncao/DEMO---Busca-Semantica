@@ -25,21 +25,14 @@ class PdfReader:
         output.close()
         return text 
     
-    def get_json_text(self):
-
-        def remove_word_break(value):
-            return ' '.join(value.strip().splitlines())
-        
+    
+    def get_json_file(self):
         json_data = []
         
-        # Preparação para Embedding do name
-        json_data.append({
-                        'id': self.instance.id,
-                        'text': self.instance.name,
-                        'type': 'name'
-                    })
-        
-        # Preparação para Embedding do file
+        def remove_word_break(value):
+            return ' '.join(value.strip().splitlines())
+
+        # Preparação para Embedding do arquivo
         if (self.instance.file and os.path.exists(self.instance.file.path)):
             with open(self.instance.file.path, 'rb') as file:
                 for paragrafo in re.split(r"[;.]", self.converter(file).strip()):
@@ -47,7 +40,28 @@ class PdfReader:
                     if (len(paragrafo_tratado.split(' ')) > 3):
                         json_data.append({
                             'id': self.instance.id,
-                            'text': self.instance.name,
+                            'text': paragrafo_tratado,
                             'type': 'file'
+                        })
+        return json_data
+    
+    def get_json_instance(self):
+        def remove_word_break(value):
+            return ' '.join(value.strip().splitlines())
+        json_data = []
+        # Preparação para Embedding do name
+        json_data.append({
+                        'id': self.instance.id,
+                        'text': self.instance.name,
+                        'type': 'name'
+                    })
+        
+        # Preparação para Embedding do description
+        description = remove_word_break(self.instance.description) 
+        if (description):
+            json_data.append({
+                            'id': self.instance.id,
+                            'text': description,
+                            'type': 'description'
                         })
         return json_data

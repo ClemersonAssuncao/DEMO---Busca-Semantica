@@ -158,7 +158,7 @@ FolderTree.prototype = {
         const documentFilter = document.querySelector('#doc-name');
         if (documentFilter){
             documentFilter.addEventListener('keyup', () => {
-                this.filterBySelectedFolder()
+                this.filterDocuments()
             })
         }
 
@@ -201,56 +201,47 @@ FolderTree.prototype = {
             this.currentElement = folder;
             this.openContextMenu(event);
         });
-        // element.querySelector('span').addEventListener('click', )
         const span = element.querySelector('span');
-        span.addEventListener('click', () => {
+        span.addEventListener('click', (event) => {
+            
             if (span.classList.contains('selected')){
                 this.filteredFolder = null;
-                this.filterBySelectedFolder();
-                document.querySelector('#filter-folder').innerHTML = '';
-                return span.classList.remove('selected') 
+                this.filteredSpan = null;
+                span.classList.remove('selected')
+            } else {
+                if (this.filteredSpan){
+                    this.filteredSpan.classList.remove('selected')
+                }
+                this.filteredFolder = element.getAttribute('data-id');
+                this.filteredSpan = span;
+                span.classList.add('selected');
             }
-            this.$element.querySelectorAll('span.selected').forEach( el => el.classList.remove('selected'))
-            span.classList.add('selected');
-            if (document.querySelector('#filter-folder')) {
-                document.querySelector('#filter-folder').innerHTML = '';
-                const folder = document.createElement('span');
-                folder.className = 'badge rounded-pill text-bg-secondary text-white mx-1';
-                folder.setAttribute('role','button');
-                folder.setAttribute('data-id', element.getAttribute('data-id'));
-                folder.textContent = element.textContent;
-                folder.innerHTML += '<i class="bi bi-x"></i>';
-                folder.addEventListener('click', () => {
-                    folder.remove();
-                    span.classList.remove('selected');
-                    this.filteredFolder = null;
-                    this.filterBySelectedFolder();
-                });
-                document.querySelector('#filter-folder').appendChild(folder);
-            };
-            this.filteredFolder = element.getAttribute('data-id');
-            this.filterBySelectedFolder();
+            this.spanOnClickEvent(event, span, this.filteredFolder);
         });
     },
-    filterBySelectedFolder() {
+    filterDocuments() {
         const text = document.querySelector('#doc-name').value.toUpperCase();
         const id = this.filteredFolder;
         document.querySelectorAll(`table tbody tr td.id_folder`).forEach(el => {
             const checkedId = el.parentElement.querySelector('.id span').textContent.toUpperCase().includes(text);
             const checkedName = el.parentElement.querySelector('.name').textContent.toUpperCase().includes(text);
             const checkedDescription = el.parentElement.querySelector('.description').textContent.toUpperCase().includes(text);
-
+            // const 
+            // if ()
             // essa condição está errada
             // está filtrando por texto, porém não filtra por pasta
             // essa condição verifica pasta: id != null && el.getAttribute('data-id') != id
             // essa condição verifica o texto: !checkedId && !checkedName && !checkedDescription
-            const checked = id != null && el.getAttribute('data-id') != id && !checkedId && !checkedName && !checkedDescription;
+            const checked = (id != null && el.getAttribute('data-id') != id) || (!checkedId && !checkedName && !checkedDescription);
             
             // O filtro deve funcionar tanto com pasta, quando texto, se utilizar o texto, deve considerar apenas os itens que estão
             // filtrados na pasta também, caso utilizado ambos os filtros;
             // Quando a condição abaixo recebe true, ele oculta a linha, do contrário ele mostra
             el.parentElement.classList.toggle('d-none', checked );
         })
+    },
+    spanOnClickEvent() {
+        // Default Event
     }
 };
 

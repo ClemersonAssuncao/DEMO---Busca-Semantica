@@ -30,6 +30,7 @@ def document_add_edit(request, pk = None):
             document = form.save(commit=False)
             filepath = request.FILES.get('file', False)
             if (filepath):
+                OpenIAService().appendFile(document)
                 document.file = filepath
                 print(filepath)
             document.user_created = request.user

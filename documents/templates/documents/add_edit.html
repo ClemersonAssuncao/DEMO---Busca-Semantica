@@ -34,7 +34,9 @@
                     <div class='d-flex flex-row-reverse'>
                         <button type="submit" class="btn mt-2 mx-2 btn-primary">Salvar</button>
                         <!-- <a href="{% url 'documents:add' %}" class="btn btn-light text-nowrap mt-2" tabindex="-1" role="button" aria-disabled="true">Salvar e Novo </a> -->
+                        {% if form.instance.pk %}
                         <button type="button" data-bs-toggle="modal" data-bs-target="#delete_document" class="btn mt-2 mx-2 btn-danger">Excluir</button>
+                        {% endif %}
                     </div>
                 </form>  
             </div>
@@ -42,29 +44,19 @@
     </div>
     <script>
         
-        
-        
-        // document.querySelectorAll('.folder').forEach( element => {
-        //     element.addEventListener('click', function(e) {
-        //         let value = element.getAttribute('data-id');
-        //         if (element.classList.contains('selected'))
-        //             value = ''
-                
-        //         document.querySelector('select[name="id_folder"]').value = value
-        //     });
-        // });
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     function selectFolderTree( value ){
-        //         const elemento = document.querySelector(`.folder[data-id="${value}"]`)
-        //         if (elemento)
-        //             elemento.click()
-        //     }
-        //     document.querySelector('select[name="id_folder"]').addEventListener('change', (e) => {
-        //     selectFolderTree(e.target.value)
-        //     })
-        //     selectFolderTree(document.querySelector('select[name="id_folder"]').value)
+        document.addEventListener('DOMContentLoaded', function() {
 
-        // }, false);
+            const valueEdit = document.querySelector('select[name="id_folder"]').value;
+            window.FolderTree.$element.querySelectorAll(`div[data-id="${valueEdit}"] span`).forEach( element => {
+                window.FolderTree.filteredSpan = element;
+
+                element.classList.add('selected');
+            })
+            window.FolderTree.spanOnClickEvent = (event, _span, filteredId) => {
+                const value = filteredId || '';
+                document.querySelector('select[name="id_folder"]').value = value
+            }
+        });
         
     </script>
 {% endblock %}

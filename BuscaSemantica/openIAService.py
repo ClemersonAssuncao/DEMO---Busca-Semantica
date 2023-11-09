@@ -11,6 +11,14 @@ class OpenIAService:
         openai.api_key = settings.OPEN_IA_TOKEN 
         self.EMBEDDING_ENGINE = 'text-embedding-ada-002'
 
+    def __get_data_frame_file(self):
+        try:
+            return pd.read_csv(settings.DF_FILE_NAME)
+        except pd.errors.EmptyDataError:
+            return None
+        except FileNotFoundError:
+            return pd.DataFrame(columns=['id', 'type', 'text'])
+
     def get_embedding(self,text_to_embed):
         response = openai.Embedding.create(
             model= self.EMBEDDING_ENGINE,
@@ -25,24 +33,26 @@ class OpenIAService:
         res = dataFrame.sort_values('similarities', ascending=False)
         return res
 
-    def appendInstance(self, instance):
-        json_data = PdfReader(instance).get_json_text()
+    def appendFile(self, instance):
+        json_data = PdfReader(instance).get_json_file()
         df_new = pd.DataFrame(json_data)
-        df_new['ada_embedding'] = df_new['text'].apply(lambda x: self.get_embedding(x))
+        # df_new['ada_embedding'] = df_new['text'].apply(lambda x: self.get_embedding(x))
         
-        try:
-            df = pd.read_csv(settings.DF_FILE_NAME)
-            df = df.drop(df[df.id == instance.id].index)
-            df_outer = pd.concat([df, df_new], ignore_index=True)
-        except pd.errors.EmptyDataError:
-            df_outer = df_new
-        except FileNotFoundError:
-            df_outer = df_new
-        df_outer.to_csv(settings.DF_FILE_NAME, index=False)
+        df = self.__get_data_frame_file()
+        df = df.drop(df[(df['id'] == instance.id) & (df.type == 'file')].index)
+        df = pd.concat([df, df_new], ignore_index=True)
+        df.to_csv(settings.DF_FILE_NAME, index=False)
 
+    def appendInstance(self, instance):
+        json_data = PdfReader(instance).get_json_instance()
+        df_new = pd.DataFrame(json_data)
+        # df_new['ada_embedding'] = df_new['text'].apply(lambda x: self.get_embedding(x))
+        df = self.__get_data_frame_file() 
+        df = df.drop(df[(df['id'] == instance.id) & ((df.type == 'description') | (df.type == 'name'))].index)
+        df = pd.concat([df, df_new], ignore_index=True)
+        df.to_csv(settings.DF_FILE_NAME, index=False)
+    
         
-
-
     def deleteInstance(self, instance):
         df = pd.read_csv(settings.DF_FILE_NAME)
         df = df.drop(df[df.id == instance.id].index)
