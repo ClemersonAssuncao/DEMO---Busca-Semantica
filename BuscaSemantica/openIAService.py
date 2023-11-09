@@ -28,13 +28,15 @@ class OpenIAService:
     def appendInstance(self, instance):
         json_data = PdfReader(instance).get_json_text()
         df_new = pd.DataFrame(json_data)
-        df_new['ada_embedding'] = df_new['file_text'].apply(lambda x: self.get_embedding(x))
+        df_new['ada_embedding'] = df_new['text'].apply(lambda x: self.get_embedding(x))
         
         try:
             df = pd.read_csv(settings.DF_FILE_NAME)
             df = df.drop(df[df.id == instance.id].index)
             df_outer = pd.concat([df, df_new], ignore_index=True)
         except pd.errors.EmptyDataError:
+            df_outer = df_new
+        except FileNotFoundError:
             df_outer = df_new
         df_outer.to_csv(settings.DF_FILE_NAME, index=False)
 

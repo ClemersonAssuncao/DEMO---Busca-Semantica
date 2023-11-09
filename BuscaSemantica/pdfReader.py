@@ -9,8 +9,6 @@ import re
 class PdfReader:
 
     def __init__(self, instance):
-        if not os.path.exists(instance.file.path):
-            raise Exception(f'Arquivo Inexistente: {instance.file}')
         self.instance = instance
 
     def converter(self, file):
@@ -32,29 +30,24 @@ class PdfReader:
         def remove_word_break(value):
             return ' '.join(value.strip().splitlines())
         
-        json_data = [{
+        json_data = []
+        
+        # Preparação para Embedding do name
+        json_data.append({
                         'id': self.instance.id,
-                        'name': self.instance.name, 
-                        'description': self.instance.description,
-                        'file_name': os.path.basename(file.name),
-                        'file_text': self.instance.description
-                    },
-                    {
-                        'id': self.instance.id,
-                        'name': self.instance.name, 
-                        'description': self.instance.description,
-                        'file_name': os.path.basename(file.name),
-                        'file_text': self.instance.name
-                    },]
-        with open(self.instance.file.path, 'rb') as file:
-            for paragrafo in re.split(r"[;.]", self.converter(file).strip()):
-                paragrafo_tratado = remove_word_break(paragrafo)
-                if (len(paragrafo_tratado.split(' ')) > 3):
-                    json_data.append({
-                        'id': self.instance.id,
-                        'name': self.instance.name, 
-                        'description': self.instance.description,
-                        'file_name': os.path.basename(file.name),
-                        'file_text': paragrafo_tratado
+                        'text': self.instance.name,
+                        'type': 'name'
                     })
+        
+        # Preparação para Embedding do file
+        if (self.instance.file and os.path.exists(self.instance.file.path)):
+            with open(self.instance.file.path, 'rb') as file:
+                for paragrafo in re.split(r"[;.]", self.converter(file).strip()):
+                    paragrafo_tratado = remove_word_break(paragrafo)
+                    if (len(paragrafo_tratado.split(' ')) > 3):
+                        json_data.append({
+                            'id': self.instance.id,
+                            'text': self.instance.name,
+                            'type': 'file'
+                        })
         return json_data

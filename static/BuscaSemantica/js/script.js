@@ -1,4 +1,5 @@
 window.FolderTree = new FolderTree( document.querySelector('#folder-tree'), document.querySelector('#folder-filter'));
+window.FileForm = new FileForm( document.querySelector('#form_document'));
 
 // document.querySelectorAll('.dropdown-context-menu').forEach( element => {
 //     element.addEventListener('contextmenu', function(e) {

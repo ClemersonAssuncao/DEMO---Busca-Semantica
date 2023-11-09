@@ -75,7 +75,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'BuscaSemantica.wsgi.application'
 
 DF_FILE_NAME = BASE_DIR / 'DataFrame.csv'
-OPEN_IA_TOKEN = "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"
+
+# Criar uma variavel de ambiente na maquina local com o nome OPEN_IA_TOKEN contendo o token
+# Deve-se fechar os terminais para a recarregar as variaveis de ambiente
+# Ou colcoar fixo, desde que esteja seguro o token
+OPEN_IA_TOKEN = os.getenv('OPEN_IA_TOKEN')
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
