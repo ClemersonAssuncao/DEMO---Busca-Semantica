@@ -237,13 +237,18 @@ mark, .mark {
   position: absolute;
   padding: 10px;
   top: -3px;
-  pointer-events: none;
+  cursor: pointer;
+  user-select: none;
 }
 .selection-element.selected{
   font-weight: bold;
 }
 .dc-component button:not(.collapsed) .bi::before {
   content: "\f22c";
+}
+
+.background-gradient {
+  background: -webkit-linear-gradient(231deg, #1e30f3 0%, #e21e80 100%);;
 }
 
 /* align icon */

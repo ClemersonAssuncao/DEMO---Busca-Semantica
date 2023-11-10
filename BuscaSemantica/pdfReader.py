@@ -33,6 +33,7 @@ class PdfReader:
             return ' '.join(value.strip().splitlines())
 
         # Preparação para Embedding do arquivo
+        print(self.instance.file and os.path.exists(self.instance.file.path))
         if (self.instance.file and os.path.exists(self.instance.file.path)):
             with open(self.instance.file.path, 'rb') as file:
                 for paragrafo in re.split(r"[;.]", self.converter(file).strip()):

@@ -13,11 +13,29 @@
                 </div>
                 <form id='form_document' style="height: calc(100% - 38px);" class=' d-flex flex-column' enctype="multipart/form-data">
                     <!--  -->
-                    <div class="overflow-auto border-bottom px-2 " >
+                    <div class="overflow-auto border-bottom px-2 h-100" >
                         {% csrf_token %}
                         {% for field in form %}
                             {% if field|input_type == 'HiddenInput' %}
-                                {{field}}
+                                {{field}} 
+                            {% elif field.name == 'file'  %}
+                                <div class="mb-3">
+                                    <label for="{{field.name}}" class="form-label">{{field.label}}</label>
+                                    {% if form.instance.file %}
+                                    
+                                    <div class='d-flex flex-row mb-1'>
+                                        <i class="bi bi-file-earmark mx-1 text-decoration-none"> </i>
+                                        <div class=''>
+                                            <span> Documento Atual: </span>
+                                            <a class="mx-2" href="/media/{{form.instance.file}}" download> {{form.instance.filename}} </a>
+                                            <button type="button" data-bs-toggle="button" id="delete-file" class=" p-0 px-1 btn btn-danger">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <input type="file" name="file" class="form-control" id="id_file">
+                                </div>
                             {% else %}
                             <div class="mb-3">
                                 <label for="{{field.name}}" class="form-label">{{field.label}}</label>
@@ -52,11 +70,37 @@
 
                 element.classList.add('selected');
             })
-            window.FolderTree.spanOnClickEvent = (event, _span, filteredId) => {
-                const value = filteredId || '';
-                document.querySelector('select[name="id_folder"]').value = value
-            }
+            window.FolderTree.addEventListener("created_folder", (event) => {
+                document.querySelector('select[name="id_folder"]').innerHTML += `<option value="${event.detail.id}">${event.detail.name}</option>`  
+            })
+            window.FolderTree.addEventListener("span_clicked", (event) => {
+                const value = event.detail.id || '';
+                document.querySelector('select[name="id_folder"]').value = value;
+            });
         });
         
     </script>
+
+    <div class="modal" tabindex="-1" id="delete_document">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="POST" {% if form and form.instance.id %}action="{% url 'documents:delete' form.instance.id %}" {% endif%}>
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Deletar documento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Deseja realmente excluir este documento? <br>
+                        Ele não poderá ser recuperado
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </div>
+                            
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

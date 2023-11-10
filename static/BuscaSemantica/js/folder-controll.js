@@ -2,9 +2,25 @@ function FolderTree( elementTree, filterElement) {
     this.$element = elementTree;
     this.$filterElement = filterElement;
     this.folders = [];
+    this.events = {
+        CREATED_FOLDER: 'created_folder',
+        SPAN_CLICKED: 'span_clicked'
+    }
     this.init();
 };
 FolderTree.prototype = {
+
+    addEventListener(eventName, action){
+        this.$element.addEventListener(eventName, action);
+    },
+
+    dispatchCardEvent(eventName, data = {}) {
+        this.$element.dispatchEvent( new CustomEvent(eventName, {
+            detail: data,
+            cancelable: true,
+          })
+        );
+    },
 
     delete() {
         this.currentElement;
@@ -59,7 +75,7 @@ FolderTree.prototype = {
                 
                 const collapseItem = document.createElement('div');
                 collapseItem.className = 'collapse show';
-                collapseItem.setAttribute('id',`#folder-${data.id}`)
+                collapseItem.setAttribute('id',`folder-${data.id}`)
                 collapseItem.innerHTML = `<ul class="list-unstyled btn-toggle-nav fw-normal pb-1"> </ul>`;
                 li.appendChild(collapseItem);
                 this.addEventTreeItem(newElement, this.currentElement);
@@ -68,8 +84,10 @@ FolderTree.prototype = {
                 } else {
                     this.$element.appendChild(li);
                 }
+                new bootstrap.Collapse(collapseItem, { toggle: false })
                 document.querySelector('#id_parent_folder').innerHTML += `<option value="${data.id}">${data.name}</option>`  
                 this.folders.push(this.currentElement);
+                this.dispatchCardEvent(this.events.CREATED_FOLDER, data)
             } else {
                 this.currentElement.$element.setAttribute('data-name', data.name);
                 this.$element.querySelector(`.tree-item[data-id='${data.id}'] span`).textContent = data.name;
@@ -216,7 +234,7 @@ FolderTree.prototype = {
                 this.filteredSpan = span;
                 span.classList.add('selected');
             }
-            this.spanOnClickEvent(event, span, this.filteredFolder);
+            this.dispatchCardEvent(this.events.SPAN_CLICKED, {'id': this.filteredFolder, 'span': span});
         });
     },
     filterDocuments() {
@@ -239,9 +257,6 @@ FolderTree.prototype = {
             // Quando a condição abaixo recebe true, ele oculta a linha, do contrário ele mostra
             el.parentElement.classList.toggle('d-none', checked );
         })
-    },
-    spanOnClickEvent() {
-        // Default Event
     }
 };
 

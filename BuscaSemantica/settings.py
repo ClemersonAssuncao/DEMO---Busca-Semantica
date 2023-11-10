@@ -80,7 +80,7 @@ DF_FILE_NAME = BASE_DIR / 'DataFrame.csv'
 # Deve-se fechar os terminais para a recarregar as variaveis de ambiente
 # Ou colcoar fixo, desde que esteja seguro o token
 OPEN_IA_TOKEN = os.getenv('OPEN_IA_TOKEN')
-
+EXECUTE_API_OPEN_IA = False
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

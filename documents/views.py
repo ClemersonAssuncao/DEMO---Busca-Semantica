@@ -7,7 +7,8 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse
 from BuscaSemantica.openIAService import OpenIAService
 from django.db.models.deletion import ProtectedError
-from asgiref.sync import sync_to_async
+import os
+
 
 @login_required(redirect_field_name="users:login")
 def document_list(request):
@@ -21,22 +22,34 @@ def document_list(request):
 @login_required(redirect_field_name="users:login")
 def document_add_edit(request, pk = None):
     if request.POST or request.FILES:
+        result = {
+            'saved': False
+        }
         if (pk is None):
             form = FileForm(data = request.POST)
         else: 
             documentModel = get_object_or_404(File, pk=pk)
             form = FileForm(data = request.POST, instance= documentModel)
         if (form.is_valid()):
-            document = form.save(commit=False)
-            filepath = request.FILES.get('file', False)
-            if (filepath):
-                OpenIAService().appendFile(document)
-                document.file = filepath
-                print(filepath)
-            document.user_created = request.user
-            document.save()
-            OpenIAService().appendInstance(document)
-            return JsonResponse({'saved': True})
+            try:
+                document = form.save(commit=False)
+                if (request.POST.get('delete_file') == 'true'):
+                    if document.file:
+                        if os.path.isfile(document.file.path):
+                            os.remove(document.file.path)
+                            document.file = None
+
+                filepath = request.FILES.get('file', False)
+                if (filepath):
+                    OpenIAService().appendFile(document)
+                    document.file = filepath
+                document.user_created = request.user
+                document.save()
+                OpenIAService().appendInstance(document)
+                result['saved'] = True
+            except Exception as a:
+                result['error'] = str(a)
+            return JsonResponse(result)
     else:
         if (pk is None):
             form = FileForm()

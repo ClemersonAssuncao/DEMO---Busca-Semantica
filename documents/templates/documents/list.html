@@ -73,25 +73,26 @@
         
     document.addEventListener('DOMContentLoaded', function() {
 
-        window.FolderTree.spanOnClickEvent = (event, span ,filteredFolder) => {
+        window.FolderTree.addEventListener("span_clicked", (eventSpan) => {
             document.querySelector('#filter-folder').innerHTML = '';
-            if (filteredFolder){
+            if (event.detail.id){
                 const folder = document.createElement('span');
                 folder.className = 'badge rounded-pill text-bg-secondary text-white mx-1';
                 folder.setAttribute('role','button');
-                folder.setAttribute('data-id', filteredFolder);
-                folder.textContent = span.textContent;
+                folder.setAttribute('data-id', event.detail.id);
+                folder.textContent = event.detail.span.textContent;
                 folder.innerHTML += '<i class="bi bi-x"></i>';
-                folder.addEventListener('click', event => {
+                folder.addEventListener('click', () => {
                     folder.remove();
-                    span.classList.remove('selected');
+                    eventSpan.detail.span.classList.remove('selected');
                     window.FolderTree.filteredFolder = null;
                     window.FolderTree.filterDocuments();
                 });
                 document.querySelector('#filter-folder').appendChild(folder);
-                window.FolderTree.filterDocuments();
+                
             }
-        }
+            window.FolderTree.filterDocuments();
+        });
     });
     
 </script>

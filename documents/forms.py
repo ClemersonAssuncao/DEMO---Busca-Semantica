@@ -18,7 +18,7 @@ class FolderForm(forms.ModelForm):
 class FileForm(forms.ModelForm ):
     id = forms.CharField(max_length=255, widget=forms.HiddenInput(), required=False)
     name = forms.CharField(label='Nome', max_length=255)
-    description = forms.CharField(label='Descrição', max_length=255, widget= forms.Textarea())
+    description = forms.CharField(label='Descrição', max_length=255, widget= forms.Textarea(attrs={'rows':5}))
     file = forms.FileField(label='Arquivo', required=False)
     id_folder = forms.ModelChoiceField(queryset=Folder.objects.all())
 
@@ -26,3 +26,5 @@ class FileForm(forms.ModelForm ):
     class Meta:
         model = File
         exclude = ['dt_created', 'dt_updated', 'user_created', 'user_updated']
+        
+    field_order = ['id','name', 'description', 'id_folder', 'file']

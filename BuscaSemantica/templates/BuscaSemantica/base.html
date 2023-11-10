@@ -21,7 +21,7 @@
     <body class="d-flex flex-column h-100">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 ">
-            <div class="container px-5 inner-addon left-addon">
+            <div class="container px-5">
                 
                 <a class="navbar-brand" href="/">
                     <img class="img-fluid" src="{% static 'BuscaSemantica/assets/logo_2.png' %}" alt="..." />
@@ -74,35 +74,23 @@
         <!-- Bootstrap core JS-->
         <script src="{% static 'BuscaSemantica/js/bootstrap.bundle.min.js' %}"></script>
         {% if user.is_authenticated %}
+        <script src="{% static 'BuscaSemantica/js/service.js' %}"></script>
 
         {% if request.resolver_match.app_name == 'documents' %}
 
-        <div class="modal" tabindex="-1" id="delete_document">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form method="POST" {% if form and form.instance.id %}action="{% url 'documents:delete' form.instance.id %}" {% endif%}>
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h5 class="modal-title">Deletar documento</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Deseja realmente excluir este documento? <br>
-                            Ele não poderá ser recuperado
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Fechar</button>
-                            <button type="submit" class="btn btn-danger">Excluir</button>
-                        </div>
-                                
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <script src="{% static 'BuscaSemantica/js/service.js' %}"></script>
         <script src="{% static 'BuscaSemantica/js/file-controll.js' %}"></script>
         <script src="{% static 'BuscaSemantica/js/folder-controll.js' %}"></script>
+        <script>
+            window.FolderTree = new FolderTree( document.querySelector('#folder-tree'), document.querySelector('#folder-filter'));
+            window.FileForm = new FileForm( document.querySelector('#form_document'));
+        </script>
+
+        {% elif request.resolver_match.app_name == 'search' %}
+        <script src="{% static 'BuscaSemantica/js/search-controll.js' %}"></script>
+        <script>
+            window.Search = new Search( document.querySelector('#search-filter'), document.querySelector('#result-list'));
+        </script>
+
         {% endif %}
         
         <div class="modal-backdrop show d-none align-items-center d-flex justify-content-center" id="loader-service" style="z-index: 9999;">
@@ -111,9 +99,25 @@
             </div>
         </div>
         <script src="{% static 'BuscaSemantica/js/script.js' %}"></script>
-        <script src="{% static 'BuscaSemantica/js/models.js' %}"></script>
         {% endif %}
-        <!-- Core theme JS-->
-        <!-- <script src="js/scripts.js"></script> -->
+        <div class="modal" tabindex="-1" id="errors-message">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form method="POST" {% if form and form.instance.id %}action="{% url 'documents:delete' form.instance.id %}" {% endif%}>
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger"><i class="bi bi-exclamation-circle mx-1"></i>Aviso de erro</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                        </div>
+                                
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

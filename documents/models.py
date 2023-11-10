@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+import os
 
 
 # Create your models here.
@@ -30,9 +32,14 @@ class Folder(models.Model):
 
 class File(models.Model):
 
+    
+    def file_directory_path(instance, filename):
+
+        return f"{instance.user_created}/{filename}"
+
     id = models.AutoField(verbose_name="Seq.", primary_key=True, auto_created=True)
     name = models.CharField(verbose_name='Nome', max_length=255)
-    file = models.FileField(verbose_name='Arquivo')
+    file = models.FileField(verbose_name='Arquivo', upload_to=file_directory_path)
     description = models.TextField(verbose_name='Descrição', max_length=255)
     id_folder = models.ForeignKey(Folder, on_delete=models.PROTECT, verbose_name='Pasta')
 
@@ -45,7 +52,39 @@ class File(models.Model):
     def __str__(self):
         return self.name
     
+    def filename(self):
+        return os.path.basename(self.file.name)
+    
     def getColumnsToGrid():
         fields = ['id','name', 'description', 'id_folder', 'file']
         newList = [ {'attname': column, 'verbose_name': str(getattr(File,column).field._verbose_name)} for column in fields if hasattr(File, column)]
         return newList
+
+
+    
+        
+@receiver(models.signals.post_delete, sender=File)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+@receiver(models.signals.pre_save, sender=File)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    if not instance.pk :
+        return False
+    
+    instance = File.objects.get(pk=instance.pk)
+
+    if not instance.file:
+        return False
+    
+    try:
+        old_file = instance.file
+    except File.DoesNotExist:
+        return False
+
+    new_file = instance.file
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)

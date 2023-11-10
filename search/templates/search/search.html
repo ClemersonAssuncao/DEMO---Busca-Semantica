@@ -1,8 +1,44 @@
 {% extends "BuscaSemantica/base.html" %}
 {% block content %}
 {% load controllForms %}
+<div class="p-3 bg-light h-100">
+    <div class="d-flex flex-column h-100 p-2">
+        <div class="card d-flex mb-3 flex-column flex-shrink-0 w-100 p-4" style="margin-right: 10px">
+            <div class="inner-addon right-addon">
+                <i class="bi bi-search"></i>
+                {% csrf_token %}
+                <input class="form-control" id="search-filter" type="text" placeholder="Pesquisar documento..." data-sb-validations="required" />
+            </div>
+        </div>
+        <div class="card d-flex flex-column flex-shrink-0 p-3" style="height: calc(100% - 98px);">
+            <div class="d-flex flex-column overflow-auto" id="result-list">
+                {% for row in files %}
+                    <div class="card border d-flex flex-column mb-2" role='button'>
+                        <div class="row g-0">
+                            <div class="col-md-10">
+                              <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="bi bi-filetype-pdf text-primary"></i>
+                                    <span>{{row.name}}</span>
+                                </h5>
+                                <p class="card-text">...{{row.result}}...</p>
+                                <p class="card-text">
+                                    <small class="text-body-secondary">
+                                        <i class="bi bi-pencil-fill text-secondary px-2"></i>
+                                        <span>Criado por {{row.user_created}} em {{row.dt_created}} </span>
+                                    </small>
+                                </p>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="container p-3 bg-light h-100">
+<!-- <div class="container p-3 bg-light h-100">
     <div class="inner-addon right-addon">
         <i class="bi bi-search"></i>
         <input class="form-control" id="name" type="text" onsubmit="return false" placeholder="Pesquisar..." data-sb-validations="required" />
@@ -29,5 +65,5 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 {% endblock %}
