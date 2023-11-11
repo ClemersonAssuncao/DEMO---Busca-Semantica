@@ -41,11 +41,12 @@ def document_add_edit(request, pk = None):
 
                 filepath = request.FILES.get('file', False)
                 if (filepath):
-                    OpenIAService().appendFile(document)
                     document.file = filepath
                 document.user_created = request.user
                 document.save()
                 OpenIAService().appendInstance(document)
+                if (filepath):
+                    OpenIAService().appendFile(document)
                 result['saved'] = True
             except Exception as a:
                 result['error'] = str(a)

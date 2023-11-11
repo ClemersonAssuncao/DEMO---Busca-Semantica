@@ -36,7 +36,7 @@ FileForm.prototype = {
         if (this.deleteFile){
             parameter.append('delete_file', this.deleteFile.classList.contains('active'))
         }
-        const server = new Server(`${ file ? 'bi-filetype-pdf' : 'bi-file-earmark-text'}`);
+        const server = new Server(`${ file ? 'bi-filetype-pdf' : 'bi-card-text'}`);
         server.send('POST', `/documents/${url}`, parameter).then( dataSerialized => {
             const data = JSON.parse(dataSerialized);
 

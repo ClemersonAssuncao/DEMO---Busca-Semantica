@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
+from django.db.models.fields.files import FieldFile
 import os
 
 
@@ -31,7 +32,6 @@ class Folder(models.Model):
         return dirTree
 
 class File(models.Model):
-
     
     def file_directory_path(instance, filename):
 
@@ -41,7 +41,7 @@ class File(models.Model):
     name = models.CharField(verbose_name='Nome', max_length=255)
     file = models.FileField(verbose_name='Arquivo', upload_to=file_directory_path)
     description = models.TextField(verbose_name='Descrição', max_length=255)
-    id_folder = models.ForeignKey(Folder, on_delete=models.PROTECT, verbose_name='Pasta')
+    id_folder = models.ForeignKey(Folder, on_delete=models.PROTECT, verbose_name='Pasta', related_name='pasta')
 
     # Audit
     dt_created = models.DateTimeField(verbose_name='Data de criação', auto_now_add=True, null=True)
@@ -53,14 +53,30 @@ class File(models.Model):
         return self.name
     
     def filename(self):
+        if not self.file or not os.path.isfile(self.file.path):
+            return None
         return os.path.basename(self.file.name)
     
     def getColumnsToGrid():
         fields = ['id','name', 'description', 'id_folder', 'file']
         newList = [ {'attname': column, 'verbose_name': str(getattr(File,column).field._verbose_name)} for column in fields if hasattr(File, column)]
         return newList
-
-
+    
+    def to_json(self):
+        fields = ['id','name', 'description', 'id_folder', 'file', 'dt_created', 'user_created']
+        data = {}
+        for column in fields:
+            if hasattr(File, column):
+                value = getattr(self,column)
+                if (isinstance(value, Folder)):
+                    data[column] = value.name
+                elif (isinstance(value, FieldFile)):
+                    data[column] = value.name
+                elif (isinstance(value, User)):
+                    data[column] = value.username
+                else:
+                    data[column] = value
+        return data
     
         
 @receiver(models.signals.post_delete, sender=File)
@@ -74,17 +90,11 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     if not instance.pk :
         return False
     
-    instance = File.objects.get(pk=instance.pk)
+    old_instance = File.objects.get(pk=instance.pk)
 
-    if not instance.file:
+    if not old_instance.file:
         return False
     
-    try:
-        old_file = instance.file
-    except File.DoesNotExist:
-        return False
-
-    new_file = instance.file
-    if not old_file == new_file:
-        if os.path.isfile(old_file.path):
-            os.remove(old_file.path)
+    if not old_instance.file == instance.file:
+        if os.path.isfile(old_instance.file.path):
+            os.remove(old_instance.file.path)

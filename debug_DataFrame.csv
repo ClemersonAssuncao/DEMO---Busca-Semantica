@@ -1,0 +1,91 @@
+id,type,text
+40,name,SpringBoot - JAVA
+40,description,Documentação da criação de servidores WEB usando JAVA.
+40,file,Primeiros passos com o Spring Boot  Conheça o Spring Boot
+40,file,a ferramenta do ecossistema Spring que garante ganho de  produtividade
+40,file,qualidade e satisfação em seus novos projetos
+40,file,O que é o Spring Boot?  Há alguns anos – em abril de 2014 – a Spring IO disponibilizava a primeira versão não-beta do Spring Boot
+40,file,depois de mais de dezoito meses de desenvolvimento e maturação
+40,file,o projeto tem evoluído em grande velocidade e
+40,file,na data de escrita deste artigo
+40,file,já se encontra na versão 1.2.5
+40,file,com a 1.3.x batendo a porta
+40,file,O Spring Boot é um projeto-chave para a Spring IO
+40,file,muitos desenvolvedores ainda não tiveram um primeiro contato com ele e muitos dos já introduzidos ainda desconhecem algumas ou várias de suas possibilidades e recursos
+40,file,É uma ferramenta de alavancagem de produtividade e qualidade
+40,file,se você é um desenvolvedor que lida com aplicações baseadas em Spring
+40,file,deve ao menos conhecê-la
+40,file,Ao ler este artigo você entenderá as motivações por trás desse projeto
+40,file,assim como sua importância
+40,file,não só para a Spring IO
+40,file,como para a indústria de software atual
+40,file,se já não sabe
+40,file,como dar seus primeiros passos no uso do Spring Boot
+40,file,assim como orientá-lo em casos excepcionais às suas configurações pré-fixadas
+40,file,mesmo àqueles que não estão envolvidos com o Spring em seu dia a dia
+40,file,ou o fazem muito esporadicamente
+40,file,este artigo trará muita informação útil
+40,file,de uma forma ou de outra
+40,file,Com a finalidade de exercício dos conceitos
+40,file,mecanismos e pontos apresentados
+40,file,este artigo também traz um pequeno projeto web que expõe um serviço REST de consulta de aeroportos pelo mundo através dos critérios país
+40,file,cidade ou código da International Air Transport Association
+40,file,É uma aplicação um tanto mais complexa que um 'Hello World!'
+40,file,mas simples ao ponto de não perdermos de vista nosso foco
+40,file,a compreensão e uso do Spring Boot
+40,file,Para construir e executá-la é preciso apenas do JDK
+40,file,do Maven e estar conectado à Internet
+40,file,para que o mesmo descarregue as dependências do projeto
+40,file,Apesar de ser inteiramente funcional com o Java 6 e 7
+40,file,replicamos aqui a recomendação do   documento de referência do Spring Boot em utilizá-lo com o Java 8 – como veremos
+40,file,configurá-lo a uma ou outra versão é tão simples como escrever o número dela
+40,file,é necessário que seja a versão 3.2+
+40,file,É possível também utilizar o Gradle (1.12+)
+40,file,mas como o primeiro é mais conhecido e já faz parte do dia a dia da maior parte dos desenvolvedores
+40,file,nosso projeto irá adotá-lo
+40,file,Apesar de código e recursos em arquivo não somarem muito mais que uma dezena de itens
+40,file,recomenda-se o uso de uma IDE
+40,file,preferencialmente o Spring Tool Suite (STS) – mas só pelo fato de ele possuir uma integração natural com componentes Spring
+40,file,como o próprio Boot
+40,file,o que facilita a execução e depuração com o mínimo esforço
+40,file,Para entendermos por que o Spring Boot foi criado
+40,file,precisamos conhecer um pouco  da história do Spring Framework
+40,file,E para que possamos entender
+40,file,o Spring  Framework
+40,file,precisamos conhecer um pouco da história do J2EE
+40,file,Java 2 –  Enterprise Edition
+40,file,a discorrer sobre essas histórias e suas  relações
+40,file,a começar pelo J2EE
+40,file,É provável que alguns dos leitores já saibam delas
+40,file,mas vale a pena ver de novo
+40,file,Java 2 – Enterprise Edition  O J2EE
+40,file,parte da plataforma Java
+40,file,é similarmente uma plataforma
+40,file,mas específica  para o desenvolvimento de aplicações Java em arquitetura de multicamadas
+40,file,executadas em servidores de aplicações
+40,file,Ela não é exatamente um produto
+40,file,mas um conjunto de especificações
+40,file,originalmente desenvolvido pela Sun Microsystems (casa original do Java
+40,file,e lançado evolutivamente em versões
+40,file,A partir da versão 1.3 a especificação da plataforma passou ao domínio da JCP (Java Community Process)
+40,file,que a controla através de JSRs (Java Specification Requests)
+40,file,que especifica o J2EE 1.3 (2001)
+40,file,que especifica o J2EE 1.4 (2002)
+40,file,e assim por diante
+40,file,O Java EE – passemos a utilizar a sigla atual a partir daqui – inclui diversas especificações de API
+40,file,e como usá-las de maneira coordenada
+40,file,Há também especificações únicas a seus componentes
+40,file,portlets e diversas tecnologias de serviços web
+40,file,Todas essas especificações estão interligadas com o propósito de permitir a criação de aplicações corporativas – termo comum que usamos para designar uma aplicação Java EE – portáveis entre os servidores de aplicação
+40,file,os quais disponibilizam todas as especificações como infraestrutura de maneira uniforme
+40,file,além de garantir escalabilidade
+40,file,concorrência e gerenciamento dos componentes e aplicações entregues (deployed) neles
+40,file,O objetivo é permitir ao desenvolvedor manter o máximo possível de seu foco na construção do negócio de sua aplicação e alavancar produtividade e qualidade
+40,file,Observe na Figura 1 a visão geral do Java EE
+40,file,A Figura 2 apresenta uma visão mais detalhada e integrada
+48,name,Como fazer uma requisição HTTP - JS
+48,description,O XMLHttpRequest é uma API antiga
+48,description,mas ainda amplamente suportada pelos navegadores modernos
+48,description,Ele permite fazer requisições síncronas e assíncronas
+48,description,facilitando a comunicação entre o cliente e o servidor
+48,description,Utilizado no Javascript.

@@ -9,14 +9,21 @@ def search(request):
         return render(request, "BuscaSemantica/about.html")
 
     if request.POST:
-        text = request.POST.get('text',None)
-        dataFrame = OpenIAService().search(text)
-        for register in dataFrame['id'].values:
-            print(register)
-        return JsonResponse({'finding...': text})
-        # df = pd.read_csv(settings.DF_FILE_NAME)
-        # df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
-        # new_df = OpenIAService().search(text, df)
-        # print(new_df.drop_duplicates(subset=['file_name'], keep='first'))
+        results = {}
+        try:
+            items = []
+            text = request.POST.get('text',None)
+            dataFrame = OpenIAService().search(text)
+            for index, row in dataFrame.iterrows():
+                if (dataFrame['similarities'][index] >= settings.DF_ACCURACY):
+                    json_instance = File.objects.get(id = row['id']).to_json()
+                    json_instance['type'] = row['type']
+                    json_instance['similarity'] = dataFrame['similarities'][index]
+                    json_instance['text'] = row['text']
+                    items.append(json_instance)
+            results['items'] = items
+        except Exception as a:
+            results['error'] = str(a)
+        return JsonResponse(results)
 
-    return render(request, 'search/search.html', {'files' : File.objects.all()})
+    return render(request, 'search/search.html', )
