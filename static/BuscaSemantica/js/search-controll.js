@@ -59,13 +59,6 @@ Search.prototype = {
                                         </div>
                                     </div>`;
                 this.$elementList.appendChild(card);
-                /*
-                
-                <div class="" role='button'>
-                        
-                    </div>
-                    
-                    */ 
             }
         })
     }

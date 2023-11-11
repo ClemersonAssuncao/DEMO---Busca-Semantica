@@ -41,8 +41,15 @@ def document_add_edit(request, pk = None):
 
                 filepath = request.FILES.get('file', False)
                 if (filepath):
+                    if (not filepath.name.upper().endswith('PDF')):
+                        result['error'] = 'O arquivo não é um PDF.'
+                        return JsonResponse(result)
                     document.file = filepath
-                document.user_created = request.user
+
+                if (document.pk):
+                    document.user_updated = request.user
+                else:
+                    document.user_created = request.user
                 document.save()
                 OpenIAService().appendInstance(document)
                 if (filepath):

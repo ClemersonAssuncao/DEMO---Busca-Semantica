@@ -4,7 +4,8 @@ function FolderTree( elementTree, filterElement) {
     this.folders = [];
     this.events = {
         CREATED_FOLDER: 'created_folder',
-        SPAN_CLICKED: 'span_clicked'
+        SPAN_CLICKED: 'span_clicked',
+        DELETED_FOLDER: 'deleted_folder'
     }
     this.init();
 };
@@ -31,6 +32,18 @@ FolderTree.prototype = {
             const data = JSON.parse(dataSerialized);
             if (data.deleted){
                 this.folders = this.folders.filter( folder => folder.id != this.currentElement.id );
+                const removeChild = ( item ) => {
+                    const elements = item.parentElement.querySelectorAll(`div[data-parent="${item.getAttribute('data-id')}"]`);
+                    for (const element of elements) {
+                        const id = element.getAttribute('data-id');
+                        document.querySelector(`#id_parent_folder option[value="${id}"]`).remove();
+                        this.dispatchCardEvent(this.events.DELETED_FOLDER, {'id': id})
+                        removeChild(element);
+                    }
+                }
+                removeChild(this.currentElement.$element);
+                document.querySelector(`#id_parent_folder option[value="${this.currentElement.id}"]`).remove();
+                this.dispatchCardEvent(this.events.DELETED_FOLDER, {'id': this.currentElement.id})
                 this.currentElement.$element.parentElement.remove();
                 this.modalDelete['instance'].hide();
             } else {

@@ -25,5 +25,4 @@ def search(request):
         except Exception as a:
             results['error'] = str(a)
         return JsonResponse(results)
-
-    return render(request, 'search/search.html', )
+    return render(request, 'search/search.html' )

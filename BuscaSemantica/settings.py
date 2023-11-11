@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'BuscaSemantica.wsgi.application'
 # Deve-se fechar os terminais para a recarregar as variaveis de ambiente
 # Ou colcoar fixo, desde que esteja seguro o token
 OPEN_IA_TOKEN = os.getenv('OPEN_IA_TOKEN')
-EXECUTE_API_OPEN_IA = True
+EXECUTE_API_OPEN_IA = False
 DF_FILE_NAME = BASE_DIR / 'DataFrame.csv'
 DEBUG_DF_FILE_NAME = BASE_DIR / 'debug_DataFrame.csv'
 DF_ACCURACY = 0.80
