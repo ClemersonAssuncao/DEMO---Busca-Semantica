@@ -30,4 +30,4 @@ def logout_user(request):
     return render(request, 'users/logout.html')
 
 def password_user(request):
-    return render(request, 'users/password.html')
+    return render(request, 'users/password_reset.html')
