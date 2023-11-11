@@ -4,6 +4,7 @@ from openai.embeddings_utils import cosine_similarity
 from django.conf import settings
 import pandas as pd
 from .pdfReader import PdfReader
+import numpy as np
 
 class OpenIAService:
 
@@ -11,13 +12,14 @@ class OpenIAService:
         if (settings.EXECUTE_API_OPEN_IA):
             self.FILE_DATA_FRAME = settings.DF_FILE_NAME
         else:
-            self.FILE_DATA_FRAME = 'off_{settings.DF_FILE_NAME}'
+            self.FILE_DATA_FRAME = settings.DEBUG_DF_FILE_NAME
         openai.api_key = settings.OPEN_IA_TOKEN 
         self.EMBEDDING_ENGINE = 'text-embedding-ada-002'
 
     def __get_data_frame_file(self):
         try:
-            return pd.read_csv(self.FILE_DATA_FRAME)
+            df = pd.read_csv(self.FILE_DATA_FRAME)
+            return df
         except pd.errors.EmptyDataError:
             return None
         except FileNotFoundError:
@@ -34,9 +36,11 @@ class OpenIAService:
     def search(self, text):
         df = self.__get_data_frame_file() 
         if (settings.EXECUTE_API_OPEN_IA):
+            df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
             embedding = self.get_embedding(text)
             df['similarities'] = df.ada_embedding.apply(lambda x: cosine_similarity(x, embedding))
             df = df.sort_values('similarities', ascending=False)
+            df = df.drop_duplicates(subset=['id'], keep='first')
         return df
 
     def appendFile(self, instance):

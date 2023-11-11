@@ -33,12 +33,11 @@ class PdfReader:
             return ' '.join(value.strip().splitlines())
 
         # Preparação para Embedding do arquivo
-        print(self.instance.file and os.path.exists(self.instance.file.path))
         if (self.instance.file and os.path.exists(self.instance.file.path)):
             with open(self.instance.file.path, 'rb') as file:
-                for paragrafo in re.split(r"[;.]", self.converter(file).strip()):
+                for paragrafo in re.split(r"([.;,])(\s+)", self.converter(file).strip()):
                     paragrafo_tratado = remove_word_break(paragrafo)
-                    if (len(paragrafo_tratado.split(' ')) > 3):
+                    if (len(paragrafo_tratado) > 1):
                         json_data.append({
                             'id': self.instance.id,
                             'text': paragrafo_tratado,
@@ -60,9 +59,12 @@ class PdfReader:
         # Preparação para Embedding do description
         description = remove_word_break(self.instance.description) 
         if (description):
-            json_data.append({
-                            'id': self.instance.id,
-                            'text': description,
-                            'type': 'description'
-                        })
+            for paragrafo in re.split(r"([.;,])(\s+)", description.strip()):
+                paragrafo_tratado = remove_word_break(paragrafo)
+                if (len(paragrafo_tratado) > 1):
+                    json_data.append({
+                                    'id': self.instance.id,
+                                    'text': paragrafo_tratado,
+                                    'type': 'description'
+                                })
         return json_data
