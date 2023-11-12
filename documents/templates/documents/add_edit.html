@@ -34,7 +34,7 @@
                                         </div>
                                     </div>
                                     {% endif %}
-                                    <input type="file" name="file" class="form-control" id="id_file">
+                                    <input type="file" accept="application/pdf" name="file" class="form-control" id="id_file">
                                 </div>
                             {% else %}
                             <div class="mb-3">
@@ -48,6 +48,17 @@
                                 {{ form.errors }}
                             </div>
                         {% endif %}
+                        <p class="card-text">
+                            <small class="text-body-secondary">
+                                {% if form.instance.pk %}
+                                <i class="bi bi-pencil-fill text-secondary px-2"></i>
+                                <span>Criado por {{form.instance.user_created}} em {{form.instance.dt_created}} </span>
+                                    {% if form.instance.user_updated %}
+                                        <span class='mx-2'>Editado por {{form.instance.user_updated}} em {{form.instance.dt_updated}} </span>
+                                    {% endif %}
+                                {% endif %}
+                            </small>
+                        </p>
                     </div>
                     <div class='d-flex flex-row-reverse'>
                         <button type="submit" class="btn mt-2 mx-2 btn-primary">Salvar</button>
@@ -76,6 +87,9 @@
             window.FolderTree.addEventListener("span_clicked", (event) => {
                 const value = event.detail.id || '';
                 document.querySelector('select[name="id_folder"]').value = value;
+            });
+            window.FolderTree.addEventListener("deleted_folder", (event) => {
+                document.querySelector(`select[name="id_folder"] option[value="${event.detail.id}"]`).remove();
             });
         });
         

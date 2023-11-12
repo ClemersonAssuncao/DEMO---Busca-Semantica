@@ -34,13 +34,18 @@ class OpenIAService:
         return embedding
     
     def search(self, text):
-        df = self.__get_data_frame_file() 
-        if (settings.EXECUTE_API_OPEN_IA):
-            df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
-            embedding = self.get_embedding(text)
-            df['similarities'] = df.ada_embedding.apply(lambda x: cosine_similarity(x, embedding))
-            df = df.sort_values('similarities', ascending=False)
-            df = df.drop_duplicates(subset=['id'], keep='first')
+        df = self.__get_data_frame_file()
+        if (settings.EXECUTE_API_OPEN_IA): 
+            if (settings.EXECUTE_API_OPEN_IA):
+                df['ada_embedding'] = df.ada_embedding.apply(eval).apply(np.array)
+                embedding = self.get_embedding(text)
+                df['similarities'] = df.ada_embedding.apply(lambda x: cosine_similarity(x, embedding))
+        else:
+                df['similarities'] = df.id.apply(lambda x: 0.8)
+        df = df.sort_values('similarities', ascending=False)
+        df = df.drop_duplicates(subset=['id'], keep='first')
+        print(df)
+            
         return df
 
     def appendFile(self, instance):
