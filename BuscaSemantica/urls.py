@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from . import views
 
@@ -27,6 +28,9 @@ urlpatterns = [
     path('documents/', include('documents.urls'), name='documents'),
     path('', include('search.urls'), name='search'),
     path('user/', include('users.urls'), name='users'),
+    
+    path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name="users/password_confirm.html", ), name="password_reset_confirm"),
+    # path('reset/<uidb64>/<token>', views.reset_password, name="password_reset_confirm"),
     # path('users/', include('material.urls'), name='material'),
 ]
 

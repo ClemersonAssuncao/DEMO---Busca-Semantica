@@ -9,3 +9,8 @@ def about(request):
 def controll(request):
     return render(request, "BuscaSemantica/controll.html")
 
+def reset_password(request, uid, token):
+    print(uid)
+    print(token)
+    return render(request, 'users/password_confirm.html')
+

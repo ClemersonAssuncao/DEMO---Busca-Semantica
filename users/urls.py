@@ -8,9 +8,8 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
 
     # path('password/', views.password_user, name='password'),
-    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="users/password_reset.html", success_url= "users/reset_password_sent/"), name="reset_password"),
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="users/password_reset.html", success_url= "/user/reset_password_sent/"), name="reset_password", ),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="users/password_done.html"), name="password_reset_done"),
-    path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name="users/password_confirm.html", success_url= "users/reset_password_complete/"), name="password_reset_confirm"),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="users/password_complete.html"), name="password_reset_complete"),
 ]
 
