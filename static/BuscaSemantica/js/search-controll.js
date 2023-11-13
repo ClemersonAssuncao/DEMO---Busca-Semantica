@@ -1,6 +1,7 @@
 function Search( elementInput, elementList) {
     this.$elementInput = elementInput;
     this.$elementList = elementList;
+    this.modalView = document.querySelector('#view_search');
     this.init();
 };
 Search.prototype = {
@@ -26,7 +27,7 @@ Search.prototype = {
         const server = new Server('bi-search');
         server.send('POST', '/', formData).then( dataSerialized => {
             const data = JSON.parse(dataSerialized);
-            
+            console.log(data);
             if(data.error){
                 const modalElement = document.querySelector('#errors-message');
                 modalElement.querySelector('.modal-body').textContent = data.error;
@@ -58,6 +59,19 @@ Search.prototype = {
                                             </div>
                                         </div>
                                     </div>`;
+                card.addEventListener('click', () => {
+                    if (!this.modalView['instance'])
+                        this.modalView['instance'] = new bootstrap.Modal(this.modalView, {});
+
+                        // subsituir os dados do HTML com o item selecionado;
+                        this.modalView.querySelector('.modal-title').textContent = result.name;
+
+                        // incluir outros campos
+
+
+
+                        this.modalView['instance'].show();
+                })
                 this.$elementList.appendChild(card);
             }
         })
