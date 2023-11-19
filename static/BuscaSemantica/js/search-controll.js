@@ -67,8 +67,7 @@ Search.prototype = {
                         this.modalView.querySelector('.modal-title').textContent = result.name;
 
                         // incluir outros campos
-
-
+                        this.modalView.querySelector('.modal-description').textContent = result.description;
 
                         this.modalView['instance'].show();
                 })
