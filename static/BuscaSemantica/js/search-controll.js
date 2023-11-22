@@ -69,7 +69,7 @@ Search.prototype = {
                         // incluir outros campos
                         this.modalView.querySelector('.modal-description').textContent = result.description;
 
-                        this.modalView.querySelector('#button-view').setAttribute('href', ´/documents/edit/${result.id}´);
+                        this.modalView.querySelector('#button-view').setAttribute('href', `/documents/edit/${result.id}`);
 
                         this.modalView['instance'].show();
                 })

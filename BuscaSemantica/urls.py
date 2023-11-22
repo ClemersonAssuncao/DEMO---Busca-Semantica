@@ -29,9 +29,7 @@ urlpatterns = [
     path('', include('search.urls'), name='search'),
     path('user/', include('users.urls'), name='users'),
     
-    path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name="users/password_confirm.html", ), name="password_reset_confirm"),
-    # path('reset/<uidb64>/<token>', views.reset_password, name="password_reset_confirm"),
-    # path('users/', include('material.urls'), name='material'),
+    path('reset_confirm/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name="users/password_confirm.html", success_url= "/user/reset_password_complete/", ), name="password_reset_confirm"),
 ]
 
 

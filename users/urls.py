@@ -7,20 +7,13 @@ urlpatterns = [
     path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('signup/', views.signup_user, name='signup'),
-    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="users/password_reset.html", success_url= "/user/reset_password_sent/"), name="reset_password", ),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="users/password_done.html"), name="password_reset_done"),
+    path('reset_password/', 
+         auth_views.PasswordResetView.as_view(  template_name="users/password_reset.html", 
+                                                success_url= "/user/reset_password_done/",
+                                                email_template_name = "users/password_reset_email.html",
+                                                subject_template_name= "users/password_reset_subject.txt",), 
+                                                name="reset_password", ),
+
+    path('reset_password_done/', auth_views.PasswordResetDoneView.as_view(template_name="users/password_done.html"), name="password_reset_done"),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="users/password_complete.html"), name="password_reset_complete"),
 ]
-
-# PasswordResetView: apresenta um formulário para preencher o e-mail de recuperação. 
-# Também gerará um link de uso único para a redefinição de senha e enviará esse link 
-# para o endereço de e-mail que for preenchido, caso o mesmo exista na base de dados.
-
-# PasswordResetDoneView: página mostrada depois que o usuário recebeu o link por e-mail para redifinir a senha.
-# Entenda esse método como um template que irá mostrar que o e-mail foi enviado com sucesso.
-
-# PasswordResetConfirmView: apresenta um formulário para inserir uma nova senha. 
-# Esse método possui algumas caracteristicas especiais, como o argumento uidb64 e o token. 
-# O token será para identificar se é uma senha válida conforme os padrões de segurança, já o uidb64 é o id do usuário codificado na base 64.
-
-# PasswordResetCompleteView: exibe ao usuário um template informando que a senha foi alterada com sucesso

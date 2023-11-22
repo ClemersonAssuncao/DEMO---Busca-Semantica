@@ -87,28 +87,12 @@ DF_ACCURACY = 0.80
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Configurações de envio do e-mail
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
-# EMAIL_HOST_USER = "projetosisbrenda@gmail.com"
-# EMAIL_HOST_PASSWORD = "ProjetoSis"
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.outlook.com'
-# EMAIL_HOST_USER = "projetosisbrenda@outlook.com"
-# EMAIL_HOST_PASSWORD = "ProjetoSis"
-
-# mailgun
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_HOST_USER = "postmaster@sandbox199419f36a6943ee98f4694ddc34f2f1.mailgun.org"
-EMAIL_HOST_PASSWORD = "a4c1b6db669ed758a1a4fd3616f455bd-1c7e8847-dd6cf620"
+EMAIL_HOST_USER = "projetosisbrenda@gmail.com"
+EMAIL_HOST_PASSWORD = ""
 
 DATABASES = {
     'default': {
